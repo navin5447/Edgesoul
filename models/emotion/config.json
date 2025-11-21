@@ -1,0 +1,28 @@
+{
+  "model_name": "distilbert-base-uncased-emotion",
+  "model_type": "transformers",
+  "task": "emotion-classification",
+  "num_labels": 6,
+  "labels": ["joy", "sadness", "anger", "fear", "surprise", "neutral"],
+  "max_sequence_length": 512,
+  "preprocessing": {
+    "lowercase": true,
+    "remove_special_chars": false,
+    "tokenizer": "distilbert-base-uncased"
+  },
+  "inference": {
+    "batch_size": 16,
+    "use_gpu": true,
+    "precision": "fp32"
+  },
+  "optimization": {
+    "quantization": false,
+    "onnx": false
+  },
+  "version": "1.0.0",
+  "trained_on": "emotion-dataset-2024",
+  "metrics": {
+    "accuracy": 0.89,
+    "f1_score": 0.87
+  }
+}

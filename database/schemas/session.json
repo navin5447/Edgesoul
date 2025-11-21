@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Session",
+  "description": "Chat session schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique session identifier (UUID)"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "User ID (null for anonymous)"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Session creation timestamp"
+    },
+    "last_activity": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last activity timestamp"
+    },
+    "message_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total number of messages in session"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "archived", "deleted"],
+      "default": "active"
+    },
+    "title": {
+      "type": "string",
+      "description": "Session title (auto-generated from first message)",
+      "maxLength": 100
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "user_agent": {
+          "type": "string"
+        },
+        "ip_address": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "device_type": {
+          "type": "string",
+          "enum": ["desktop", "mobile", "tablet"]
+        }
+      }
+    },
+    "emotion_summary": {
+      "type": "object",
+      "description": "Summary of emotions detected in session",
+      "properties": {
+        "dominant_emotion": {
+          "type": "string",
+          "enum": ["joy", "sadness", "anger", "fear", "surprise", "neutral"]
+        },
+        "emotion_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  },
+  "required": ["id", "created_at", "last_activity"]
+}

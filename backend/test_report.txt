@@ -1,0 +1,192 @@
+EdgeSoul Test Report
+======================================================================
+Generated: 2025-11-21 09:42:07
+======================================================================
+
+
+Core Emotion Detection
+------------------------------------------------------------
+
+test_emotion_quick.py
+  Status: PASSED
+  Time: 7.36s
+  Return Code: 0
+
+------------------------------------------------------------
+
+test_all_emotions.py
+  Status: PASSED
+  Time: 13.53s
+  Return Code: 0
+
+------------------------------------------------------------
+
+test_advanced_scenarios.py
+  Status: FAILED
+  Time: 120.00s
+  Return Code: -1
+
+  Error:
+  Test timed out after 120 seconds
+
+------------------------------------------------------------
+
+Knowledge Engine
+------------------------------------------------------------
+
+test_ollama_working.py
+  Status: FAILED
+  Time: 120.00s
+  Return Code: -1
+
+  Error:
+  Test timed out after 120 seconds
+
+------------------------------------------------------------
+
+test_knowledge_engine.py
+  Status: FAILED
+  Time: 120.00s
+  Return Code: -1
+
+  Error:
+  Test timed out after 120 seconds
+
+------------------------------------------------------------
+
+Hybrid System
+------------------------------------------------------------
+
+test_hybrid_engine.py
+  Status: FAILED
+  Time: 120.00s
+  Return Code: -1
+
+  Error:
+  Test timed out after 120 seconds
+
+------------------------------------------------------------
+
+test_chatbot_intelligence.py
+  Status: FAILED
+  Time: 120.00s
+  Return Code: -1
+
+  Error:
+  Test timed out after 120 seconds
+
+------------------------------------------------------------
+
+test_bot_responses.py
+  Status: FAILED
+  Time: 120.00s
+  Return Code: -1
+
+  Error:
+  Test timed out after 120 seconds
+
+------------------------------------------------------------
+
+Memory & Context
+------------------------------------------------------------
+
+test_database_persistence.py
+  Status: PASSED
+  Time: 1.30s
+  Return Code: 0
+
+------------------------------------------------------------
+
+test_conversation_context.py
+  Status: FAILED
+  Time: 6.81s
+  Return Code: 1
+
+  Error:
+  2025-11-21 09:35:30.343 | INFO     | services.onnx_emotion_service:__init__:35 - Loading ONNX emotion model from models\emotion_model.onnx
+2025-11-21 09:35:31.505 | INFO     | services.onnx_emotion_service:__init__:49 - ✅ ONNX Emotion Service initialized successfully
+2025-11-21 09:35:31.505 | INFO     | services.onnx_emotion_service:<module>:128 - Using ONNX Emotion Service (faster inference)
+2025-11-21 09:35:31.505 | INFO     | services.emotion_service:__init__:29 - 🚀 ONNX acceleration enabled 
+
+------------------------------------------------------------
+
+test_learning.py
+  Status: FAILED
+  Time: 120.00s
+  Return Code: -1
+
+  Error:
+  Test timed out after 120 seconds
+
+------------------------------------------------------------
+
+Edge Cases
+------------------------------------------------------------
+
+test_frustration_fix.py
+  Status: PASSED
+  Time: 8.60s
+  Return Code: 0
+
+------------------------------------------------------------
+
+test_exact_question.py
+  Status: PASSED
+  Time: 23.97s
+  Return Code: 0
+
+------------------------------------------------------------
+
+System Integration
+------------------------------------------------------------
+
+test_complete_system.py
+  Status: FAILED
+  Time: 120.00s
+  Return Code: -1
+
+  Error:
+  Test timed out after 120 seconds
+
+------------------------------------------------------------
+
+test_app.py
+  Status: FAILED
+  Time: 0.39s
+  Return Code: 1
+
+  Error:
+  Traceback (most recent call last):
+  File "C:\Users\Navinkumar\Downloads\Edgesoul\backend\test_app.py", line 8, in <module>
+    from rich.console import Console
+ModuleNotFoundError: No module named 'rich'
+
+
+------------------------------------------------------------
+
+Feature Tests
+------------------------------------------------------------
+
+test_phase1_gender.py
+  Status: PASSED
+  Time: 0.98s
+  Return Code: 0
+
+------------------------------------------------------------
+
+test_phase2_theming.py
+  Status: PASSED
+  Time: 0.13s
+  Return Code: 0
+
+------------------------------------------------------------
+
+test_phase3_bot_personality.py
+  Status: FAILED
+  Time: 120.00s
+  Return Code: -1
+
+  Error:
+  Test timed out after 120 seconds
+
+------------------------------------------------------------

@@ -1,0 +1,39 @@
+{
+  "model_name": "gpt2",
+  "model_type": "causal-lm",
+  "task": "text-generation",
+  "alternatives": [
+    {
+      "name": "gpt2",
+      "size": "774MB",
+      "edge_friendly": true
+    },
+    {
+      "name": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+      "size": "1.1GB",
+      "edge_friendly": true,
+      "recommended": true
+    },
+    {
+      "name": "meta-llama/Llama-2-7b-chat-hf",
+      "size": "13GB",
+      "edge_friendly": false,
+      "requires_auth": true
+    }
+  ],
+  "generation_config": {
+    "max_new_tokens": 500,
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "top_k": 50,
+    "repetition_penalty": 1.1,
+    "do_sample": true
+  },
+  "prompt_template": "system",
+  "optimization": {
+    "quantization": false,
+    "load_in_8bit": false,
+    "load_in_4bit": false
+  },
+  "version": "1.0.0"
+}

@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Message",
+  "description": "Chat message schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique message identifier"
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Parent session identifier"
+    },
+    "role": {
+      "type": "string",
+      "enum": ["user", "assistant", "system"],
+      "description": "Message sender role"
+    },
+    "content": {
+      "type": "string",
+      "description": "Message text content",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Message creation timestamp"
+    },
+    "emotion": {
+      "type": "object",
+      "description": "Detected emotion data (for user messages)",
+      "properties": {
+        "primary": {
+          "type": "string",
+          "enum": ["joy", "sadness", "anger", "fear", "surprise", "neutral"]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "all": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      },
+      "required": ["primary", "confidence"]
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "model_used": {
+          "type": "string",
+          "description": "AI model used for response"
+        },
+        "processing_time_ms": {
+          "type": "number",
+          "description": "Time taken to process message"
+        },
+        "tokens_used": {
+          "type": "integer",
+          "description": "Number of tokens used (for LLM)"
+        },
+        "knowledge_context": {
+          "type": "string",
+          "description": "Context used for knowledge reasoning"
+        }
+      }
+    },
+    "edited": {
+      "type": "boolean",
+      "default": false
+    },
+    "edited_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["id", "session_id", "role", "content", "timestamp"]
+}

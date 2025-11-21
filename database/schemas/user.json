@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "User",
+  "description": "User account schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique user identifier"
+    },
+    "username": {
+      "type": "string",
+      "description": "User's display name",
+      "minLength": 3,
+      "maxLength": 50
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "User's email address"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Account creation timestamp"
+    },
+    "last_active": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last activity timestamp"
+    },
+    "preferences": {
+      "type": "object",
+      "properties": {
+        "theme": {
+          "type": "string",
+          "enum": ["light", "dark", "auto"],
+          "default": "auto"
+        },
+        "notifications": {
+          "type": "boolean",
+          "default": true
+        },
+        "language": {
+          "type": "string",
+          "default": "en"
+        }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "properties": {
+        "avatar_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "bio": {
+          "type": "string",
+          "maxLength": 500
+        }
+      }
+    },
+    "stats": {
+      "type": "object",
+      "properties": {
+        "total_sessions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "total_messages": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "required": ["id", "username", "created_at"]
+}
