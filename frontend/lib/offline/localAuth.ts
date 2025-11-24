@@ -77,6 +77,7 @@ export function registerLocalUser(
 
     localStorage.setItem(AUTH_KEY, JSON.stringify(authData));
     localStorage.setItem(USER_KEY, JSON.stringify(user));
+    localStorage.setItem('edgesoul_user_id', user.id); // Store user ID for backend calls
 
     return { success: true, message: 'Registration successful', user };
   } catch (error) {
@@ -114,6 +115,7 @@ export function loginLocalUser(
     storedAuth.user.lastLogin = new Date().toISOString();
     localStorage.setItem(AUTH_KEY, JSON.stringify(storedAuth));
     localStorage.setItem(USER_KEY, JSON.stringify(storedAuth.user));
+    localStorage.setItem('edgesoul_user_id', storedAuth.user.id); // Store user ID for backend calls
 
     return { success: true, message: 'Login successful', user: storedAuth.user };
   } catch (error) {
@@ -148,6 +150,9 @@ export function isUserLoggedIn(): boolean {
  */
 export function logoutLocalUser(): void {
   localStorage.removeItem(USER_KEY);
+  localStorage.removeItem('edgesoul_user_id');
+  localStorage.removeItem('user_gender');
+  localStorage.removeItem('edgesoul_gender');
 }
 
 /**

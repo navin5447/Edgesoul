@@ -1,0 +1,5 @@
+# Model weights directory
+# Add your model weight files here
+
+# This file ensures the directory is tracked by git
+# Actual model files should be downloaded using download_models.py

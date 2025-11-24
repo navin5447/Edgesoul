@@ -5,6 +5,7 @@ from loguru import logger
 
 from services.intelligent_reply_engine import intelligent_reply_engine
 from models.chat import ChatRequest, ChatResponse
+from core.config import settings  # Import settings
 
 router = APIRouter()
 
@@ -73,7 +74,7 @@ async def chat_stream_endpoint(request: ChatRequest):
             
             # Stream the response in chunks
             message_text = response['message']
-            chunk_size = 5  # Words per chunk
+            chunk_size = settings.STREAM_CHUNK_SIZE  # Use config setting (default 5 words)
             words = message_text.split()
             
             for i in range(0, len(words), chunk_size):
@@ -87,7 +88,7 @@ async def chat_stream_endpoint(request: ChatRequest):
                 }
                 
                 yield f"data: {json.dumps(data)}\n\n"
-                await asyncio.sleep(0.05)  # Small delay for smooth streaming
+                await asyncio.sleep(settings.STREAM_DELAY_MS / 1000.0)  # Convert ms to seconds
             
             # Send final completion
             final_data = {

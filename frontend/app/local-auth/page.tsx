@@ -79,6 +79,10 @@ export default function LocalAuthPage() {
 
         const result = await signup(username, password, email, displayName);
         if (result.success) {
+          // Clear any old gender settings
+          localStorage.removeItem('user_gender');
+          localStorage.removeItem('edgesoul_gender');
+          
           // New users always go to gender selection
           router.push('/gender-selection');
         } else {

@@ -18,9 +18,13 @@ export default function GenderSelectionPage() {
     fetch(`http://localhost:8000/api/v1/memory/profile/${userId}`)
       .then(res => res.json())
       .then(profile => {
-        // If gender already set, redirect to dashboard
+        console.log('Profile check:', profile);
+        // If gender already set in backend profile, redirect to dashboard
         if (profile.gender && profile.gender !== 'not_set') {
+          console.log('Gender already set:', profile.gender);
           router.push('/dashboard');
+        } else {
+          console.log('Gender not set, staying on selection page');
         }
       })
       .catch(err => {
@@ -110,8 +114,8 @@ export default function GenderSelectionPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {/* Male Option */}
-            <button
-              onClick={() => setSelected('male')}
+            <div
+              onClick={() => !loading && setSelected('male')}
               className={`
                 p-8 rounded-xl border-2 transition-all duration-300 transform hover:scale-105
                 ${
@@ -119,18 +123,22 @@ export default function GenderSelectionPage() {
                     ? 'bg-blue-600/30 border-blue-500 shadow-lg shadow-blue-500/50'
                     : 'bg-white/5 border-white/20 hover:border-blue-400/50'
                 }
+                ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
               `}
             >
-              <div className="text-6xl mb-4">👨</div>
-              <h3 className="text-xl font-semibold text-white mb-2">Male</h3>
-              <p className="text-sm text-purple-200">
+              <div className="text-6xl mb-4 pointer-events-none">👨</div>
+              <h3 className="text-xl font-semibold text-white mb-2 pointer-events-none">Male</h3>
+              <p className="text-sm text-purple-200 pointer-events-none">
                 Direct, solution-focused communication
               </p>
-            </button>
+              {selected === 'male' && (
+                <div className="mt-3 text-blue-400 text-2xl pointer-events-none">✓</div>
+              )}
+            </div>
 
             {/* Female Option */}
-            <button
-              onClick={() => setSelected('female')}
+            <div
+              onClick={() => !loading && setSelected('female')}
               className={`
                 p-8 rounded-xl border-2 transition-all duration-300 transform hover:scale-105
                 ${
@@ -138,18 +146,22 @@ export default function GenderSelectionPage() {
                     ? 'bg-pink-600/30 border-pink-500 shadow-lg shadow-pink-500/50'
                     : 'bg-white/5 border-white/20 hover:border-pink-400/50'
                 }
+                ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
               `}
             >
-              <div className="text-6xl mb-4">👩</div>
-              <h3 className="text-xl font-semibold text-white mb-2">Female</h3>
-              <p className="text-sm text-purple-200">
+              <div className="text-6xl mb-4 pointer-events-none">👩</div>
+              <h3 className="text-xl font-semibold text-white mb-2 pointer-events-none">Female</h3>
+              <p className="text-sm text-purple-200 pointer-events-none">
                 Warm, empathetic, caring responses
               </p>
-            </button>
+              {selected === 'female' && (
+                <div className="mt-3 text-pink-400 text-2xl pointer-events-none">✓</div>
+              )}
+            </div>
 
             {/* Other Option */}
-            <button
-              onClick={() => setSelected('other')}
+            <div
+              onClick={() => !loading && setSelected('other')}
               className={`
                 p-8 rounded-xl border-2 transition-all duration-300 transform hover:scale-105
                 ${
@@ -157,14 +169,18 @@ export default function GenderSelectionPage() {
                     ? 'bg-green-600/30 border-green-500 shadow-lg shadow-green-500/50'
                     : 'bg-white/5 border-white/20 hover:border-green-400/50'
                 }
+                ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
               `}
             >
-              <div className="text-6xl mb-4">⚧️</div>
-              <h3 className="text-xl font-semibold text-white mb-2">Other</h3>
-              <p className="text-sm text-purple-200">
+              <div className="text-6xl mb-4 pointer-events-none">⚧️</div>
+              <h3 className="text-xl font-semibold text-white mb-2 pointer-events-none">Other</h3>
+              <p className="text-sm text-purple-200 pointer-events-none">
                 Balanced, inclusive interaction
               </p>
-            </button>
+              {selected === 'other' && (
+                <div className="mt-3 text-green-400 text-2xl pointer-events-none">✓</div>
+              )}
+            </div>
           </div>
 
           {/* Continue Button */}

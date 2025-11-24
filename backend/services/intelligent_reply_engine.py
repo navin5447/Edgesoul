@@ -12,6 +12,8 @@ import json
 from services.emotion_service import emotion_service
 from services.knowledge_engine import knowledge_engine
 from services.memory_service import memory_service
+from services.response_cache import response_cache
+from core.config import settings  # Import settings for optimization
 
 
 class IntelligentReplyEngine:
@@ -43,23 +45,49 @@ class IntelligentReplyEngine:
         Generate intelligent reply combining emotion + knowledge.
         
         Flow:
-        1. Detect emotion with advanced classifier
-        2. Determine response strategy
-        3. Generate appropriate reply
-        4. Add memory and personality
+        1. Check cache for instant response (if enabled)
+        2. Detect emotion with advanced classifier
+        3. Determine response strategy
+        4. Generate appropriate reply
+        5. Add memory and personality
+        6. Cache common responses
         """
         
         start_time = datetime.now()
         
         try:
-            # Get user profile for personalization
-            profile = self.memory_service.get_or_create_profile(user_id)
+            # OPTIMIZATION 1: Check cache first for instant responses
+            cached_response = response_cache.get(message, user_id)
+            if cached_response:
+                logger.info(f"Returning cached response for: {message[:30]}...")
+                # Add fresh timestamp
+                cached_response['metadata']['timestamp'] = datetime.now().isoformat()
+                cached_response['metadata']['from_cache'] = True
+                return cached_response
             
-            # Get conversation context
-            context_summary = self.memory_service.get_context_summary(user_id, max_messages=3)
-            
-            # Step 1: Emotion detection using existing service
-            emotion_data = await self.emotion_detector.detect_emotion(message)
+            # OPTIMIZATION 2: Run profile, context, and emotion detection in parallel
+            if settings.ENABLE_PARALLEL_PROCESSING:
+                profile_task = asyncio.create_task(
+                    asyncio.to_thread(self.memory_service.get_or_create_profile, user_id)
+                )
+                context_task = asyncio.create_task(
+                    asyncio.to_thread(self.memory_service.get_context_summary, user_id, 3)
+                )
+                emotion_task = asyncio.create_task(
+                    self.emotion_detector.detect_emotion(message)
+                )
+                
+                # Wait for all parallel tasks
+                profile, context_summary, emotion_data = await asyncio.gather(
+                    profile_task,
+                    context_task,
+                    emotion_task
+                )
+            else:
+                # Sequential processing (fallback)
+                profile = self.memory_service.get_or_create_profile(user_id)
+                context_summary = self.memory_service.get_context_summary(user_id, max_messages=3)
+                emotion_data = await self.emotion_detector.detect_emotion(message)
             
             # CRITICAL: Check for negation - user saying they're NOT feeling something
             is_negated = self._check_emotional_negation(message)
@@ -154,6 +182,11 @@ class IntelligentReplyEngine:
             }
             
             logger.info(f"Reply generated - Strategy: {strategy}, Emotion: {emotion_result['primary']} ({emotion_result['confidence']:.2f})")
+            
+            # OPTIMIZATION 3: Cache common responses for instant future replies
+            if response_cache.should_cache(message, final_response):
+                response_cache.set(message, user_id, final_response, emotion_result['primary'])
+                logger.debug(f"Cached response for future use")
             
             return final_response
             

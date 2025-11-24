@@ -11,6 +11,7 @@ import json
 from datetime import datetime
 
 from models.knowledge import KnowledgeResponse
+from core.config import settings  # Import settings for optimization
 
 
 class KnowledgeEngine:
@@ -94,10 +95,10 @@ class KnowledgeEngine:
         context: Optional[str] = None,
         emotion: Optional[str] = None,
         temperature: float = 0.7,
-        max_tokens: int = 500,
+        max_tokens: int = 512,  # Increased default from 500 to 512
     ) -> KnowledgeResponse:
         """
-        Ask a question and get a factual answer.
+        Ask a question and get a factual answer with optimized performance.
         
         Args:
             question: The question to answer
@@ -129,16 +130,17 @@ class KnowledgeEngine:
                         "stream": False,
                         "options": {
                             "temperature": temperature,
-                            "num_predict": max_tokens,
-                            "num_ctx": 4096,  # Increased context window for longer responses
-                            "num_threads": 4,
-                            "num_gpu": 0,
-                            "top_p": 0.9,
-                            "top_k": 40,
+                            "num_predict": settings.OLLAMA_NUM_PREDICT,  # 512 tokens for longer responses
+                            "num_ctx": settings.OLLAMA_NUM_CTX,          # 4096 context window
+                            "num_batch": settings.OLLAMA_NUM_BATCH,      # 512 batch size
+                            "num_gpu": settings.OLLAMA_NUM_GPU,          # GPU acceleration
+                            "num_thread": settings.OLLAMA_NUM_THREAD,    # Multi-threading
+                            "top_p": settings.OLLAMA_TOP_P,              # 0.9 nucleus sampling
+                            "top_k": settings.OLLAMA_TOP_K,              # 40 top-k
+                            "repeat_penalty": settings.OLLAMA_REPEAT_PENALTY,  # 1.1 repetition penalty
                             "stop": [],  # Don't stop early - let it complete
-                            "repeat_penalty": 1.1,  # Reduce repetition
-                            "presence_penalty": 0.0,  # Don't penalize tokens
-                            "frequency_penalty": 0.0  # Don't penalize frequency
+                            "presence_penalty": 0.0,
+                            "frequency_penalty": 0.0
                         }
                     }
                 )
