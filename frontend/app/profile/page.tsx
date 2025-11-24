@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocalAuth } from '@/context/LocalAuthContext';
 import { useRouter } from 'next/navigation';
 import { FaUser, FaSave, FaSpinner } from 'react-icons/fa';
@@ -28,14 +28,7 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
-  // Fetch profile on mount
-  useEffect(() => {
-    if (user) {
-      fetchProfile();
-    }
-  }, [user]);
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -95,7 +88,13 @@ export default function ProfilePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchProfile();
+    }
+  }, [user, fetchProfile]);
 
   const handleSliderChange = (key: keyof UserProfile['personality'], value: number) => {
     if (!profile) return;

@@ -182,47 +182,83 @@ export class TextToSpeechManager {
   private selectVoice(gender: string): SpeechSynthesisVoice | null {
     if (this.voices.length === 0) return null;
 
-    // Gender-specific voice selection
-    let voiceName = '';
+    console.log('Selecting voice for gender:', gender);
+    console.log('Available voices:', this.voices.map(v => v.name));
+
+    // Gender-specific voice selection with priority order
+    let selectedVoice: SpeechSynthesisVoice | null = null;
     
-    if (gender === 'male') {
-      // Prefer male voices
-      voiceName = this.voices.find(v => 
+    if (gender === 'female') {
+      // Priority 1: Explicit female voices
+      selectedVoice = this.voices.find(v => 
+        v.name.toLowerCase().includes('female') ||
+        v.name.toLowerCase().includes('woman')
+      ) || null;
+      
+      // Priority 2: Common female voice names
+      if (!selectedVoice) {
+        const femaleNames = [
+          'samantha', 'victoria', 'zira', 'susan', 'hazel',
+          'karen', 'serena', 'moira', 'tessa', 'fiona',
+          'heather', 'allison', 'princess', 'veena', 'amelie'
+        ];
+        
+        selectedVoice = this.voices.find(v => 
+          femaleNames.some(name => v.name.toLowerCase().includes(name))
+        ) || null;
+      }
+      
+      // Priority 3: Google UK English Female or Microsoft voices
+      if (!selectedVoice) {
+        selectedVoice = this.voices.find(v => 
+          v.name.includes('Google UK English Female') ||
+          v.name.includes('Microsoft Zira') ||
+          v.name.includes('Microsoft Susan')
+        ) || null;
+      }
+      
+      // Priority 4: Any voice with higher pitch characteristics (index > half)
+      if (!selectedVoice && this.voices.length > 1) {
+        const midpoint = Math.floor(this.voices.length / 2);
+        selectedVoice = this.voices[midpoint];
+      }
+      
+    } else if (gender === 'male') {
+      // Priority 1: Explicit male voices
+      selectedVoice = this.voices.find(v => 
         v.name.toLowerCase().includes('male') && 
         !v.name.toLowerCase().includes('female')
-      )?.name || '';
+      ) || null;
       
-      if (!voiceName) {
-        // Fallback to deep voices
-        voiceName = this.voices.find(v => 
-          v.name.includes('David') || 
-          v.name.includes('Daniel') ||
-          v.name.includes('UK English Male')
-        )?.name || '';
+      // Priority 2: Common male voice names
+      if (!selectedVoice) {
+        const maleNames = [
+          'david', 'daniel', 'alex', 'mark', 'ryan',
+          'george', 'nathan', 'oliver', 'thomas', 'james'
+        ];
+        
+        selectedVoice = this.voices.find(v => 
+          maleNames.some(name => v.name.toLowerCase().includes(name))
+        ) || null;
       }
-    } else if (gender === 'female') {
-      // Prefer female voices
-      voiceName = this.voices.find(v => 
-        v.name.toLowerCase().includes('female')
-      )?.name || '';
       
-      if (!voiceName) {
-        // Fallback to common female voice names
-        voiceName = this.voices.find(v => 
-          v.name.includes('Samantha') || 
-          v.name.includes('Victoria') ||
-          v.name.includes('Zira') ||
-          v.name.includes('UK English Female')
-        )?.name || '';
+      // Priority 3: Google UK English Male or Microsoft voices
+      if (!selectedVoice) {
+        selectedVoice = this.voices.find(v => 
+          v.name.includes('Google UK English Male') ||
+          v.name.includes('Microsoft David') ||
+          v.name.includes('Microsoft Mark')
+        ) || null;
       }
     }
 
-    // Find the selected voice or return first English voice
-    const voice = this.voices.find(v => v.name === voiceName) || 
-                  this.voices.find(v => v.lang.startsWith('en-')) ||
-                  this.voices[0];
+    // Fallback: First English voice or first available voice
+    if (!selectedVoice) {
+      selectedVoice = this.voices.find(v => v.lang.startsWith('en-')) || this.voices[0];
+    }
 
-    return voice;
+    console.log('Selected voice:', selectedVoice?.name);
+    return selectedVoice;
   }
 
   public speak(
@@ -249,13 +285,13 @@ export class TextToSpeechManager {
         utterance.voice = voice;
       }
 
-      // Apply gender-specific settings
-      if (settings.gender === 'male') {
-        utterance.pitch = Math.max(0.8, settings.pitch * 0.9); // Deeper voice
+      // Apply gender-specific settings with enhanced pitch adjustment
+      if (settings.gender === 'female') {
+        utterance.pitch = Math.min(1.5, settings.pitch * 1.3); // Much higher pitch for feminine voice
+        utterance.rate = settings.speed * 1.1; // Slightly faster
+      } else if (settings.gender === 'male') {
+        utterance.pitch = Math.max(0.7, settings.pitch * 0.85); // Deeper voice
         utterance.rate = settings.speed;
-      } else if (settings.gender === 'female') {
-        utterance.pitch = Math.min(1.3, settings.pitch * 1.1); // Higher voice
-        utterance.rate = settings.speed * 1.05; // Slightly faster
       } else {
         utterance.pitch = settings.pitch;
         utterance.rate = settings.speed;

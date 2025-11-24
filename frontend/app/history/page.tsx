@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocalAuth } from '@/context/LocalAuthContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { FaHistory, FaSpinner, FaCalendar, FaSmile, FaFrown, FaAngry, FaSurprise, FaHeart, FaMeh } from 'react-icons/fa';
@@ -29,13 +29,7 @@ export default function HistoryPage() {
   const [selectedConversation, setSelectedConversation] = useState<ChatMessage | null>(null);
   const [filter, setFilter] = useState<'all' | 'today' | 'week' | 'month'>('all');
 
-  useEffect(() => {
-    if (user) {
-      fetchChatHistory();
-    }
-  }, [user, filter]);
-
-  const fetchChatHistory = async () => {
+  const fetchChatHistory = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -64,7 +58,13 @@ export default function HistoryPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, filter]);
+
+  useEffect(() => {
+    if (user) {
+      fetchChatHistory();
+    }
+  }, [user, filter, fetchChatHistory]);
 
   const filterMessagesByDate = (messages: ChatMessage[], filterType: string): ChatMessage[] => {
     if (filterType === 'all') return messages;

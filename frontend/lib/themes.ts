@@ -105,15 +105,15 @@ export const themes: Record<GenderType, ThemeConfig> = {
   },
   
   female: {
-    // Colors - Soft Purple/Rose/Pink feminine palette (psychologically warm and inviting)
-    primary: '#D946EF',      // Vibrant Fuchsia - energetic, creative
-    primaryLight: '#F0ABFC',  // Soft Pink - gentle, nurturing
-    primaryDark: '#A21CAF',   // Deep Purple - elegant, sophisticated
-    secondary: '#EC4899',     // Rose Pink - warm, friendly
-    accent: '#F472B6',        // Light Pink - playful, cheerful
-    background: '#1A0B2E',    // Deep Purple-Black - elegant base
-    backgroundSecondary: '#2D1B4E', // Rich Purple - depth
-    gradient: 'linear-gradient(135deg, #1A0B2E 0%, #2D1B4E 30%, #4A1D5F 60%, #7B2869 100%)',
+    // Colors - Pink/Rose feminine palette (warm, inviting, elegant)
+    primary: '#EC4899',      // Rose Pink - primary color
+    primaryLight: '#F9A8D4',  // Light Pink - softer variant
+    primaryDark: '#DB2777',   // Deep Rose - darker variant
+    secondary: '#F472B6',     // Bright Pink - secondary accent
+    accent: '#FDE047',        // Soft Yellow - complementary accent
+    background: '#1F0A28',    // Deep Purple-Black - elegant base
+    backgroundSecondary: '#2D1440', // Dark Purple - secondary background
+    gradient: 'linear-gradient(135deg, #1F0A28 0%, #2D1440 50%, #EC4899 100%)',
     
     // Typography - Elegant, softer
     fontFamily: '"Inter", "Poppins", system-ui, sans-serif',
@@ -137,19 +137,19 @@ export const themes: Record<GenderType, ThemeConfig> = {
     
     // Chat bubbles - Very rounded (soft, feminine)
     chatBubble: {
-      user: '#D946EF',        // Fuchsia
-      assistant: '#EC4899',    // Rose Pink
+      user: '#EC4899',        // Rose Pink
+      assistant: '#F472B6',    // Bright Pink
       borderRadius: '24px',    // Extra rounded for softness
     },
     
-    // Emotions - Warm, vibrant tones (psychologically positive)
+    // Emotions - Pink/Purple warm tones
     emotions: {
       joy: '#F472B6',         // Bright Pink - happiness
       sadness: '#C084FC',     // Lavender - gentle melancholy
-      anger: '#FB7185',       // Coral - softened intensity
+      anger: '#FB7185',       // Coral Pink - softened intensity
       fear: '#E879F9',        // Bright Magenta - visible but not harsh
-      surprise: '#FBBF24',    // Golden Yellow - excitement
-      neutral: '#F0ABFC',     // Soft Pink - calm
+      surprise: '#FDE047',    // Soft Yellow - excitement
+      neutral: '#F9A8D4',     // Light Pink - calm
     },
   },
   

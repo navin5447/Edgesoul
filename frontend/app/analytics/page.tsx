@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocalAuth } from '@/context/LocalAuthContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { FaChartLine, FaSpinner, FaSmile, FaCalendarAlt, FaClock, FaFire } from 'react-icons/fa';
@@ -40,19 +40,11 @@ export default function AnalyticsPage() {
   const [emotionPatterns, setEmotionPatterns] = useState<EmotionPattern[]>([]);
   const [timeRange, setTimeRange] = useState<'week' | 'month' | 'all'>('week');
 
-  useEffect(() => {
-    if (user) {
-      fetchAnalytics();
-    }
-  }, [user, timeRange]);
-
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     if (!user) return;
-
+    
     try {
-      setLoading(true);
-
-      // Fetch data from IndexedDB
+      setLoading(true);      // Fetch data from IndexedDB
       const chats = await getAllChatHistory(user.id);
       
       const emotionCounts: { [key: string]: number } = {};
@@ -128,7 +120,13 @@ export default function AnalyticsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchAnalytics();
+    }
+  }, [user, timeRange, fetchAnalytics]);
 
   const calculateStreakDays = (timestamps: Date[]): number => {
     if (timestamps.length === 0) return 0;
