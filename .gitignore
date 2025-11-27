@@ -133,3 +133,12 @@ desktop/build/
 frontend/.next/
 backend/build/
 "@ |
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Backup files
+*_backup.tsx
+*_old.tsx
+*_new.tsx
