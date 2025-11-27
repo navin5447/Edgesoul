@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Send, Loader2, Sun, Moon, Sparkles, User, Menu, X, Volume2, VolumeX } from "lucide-react";
 import MessageList from "./MessageList";
-import Avatar2D from "../avatar/Avatar2D";
+import GenderAvatar from "../avatar/GenderAvatar";
 import VoiceButton from "./VoiceButton";
 import { useChatStore } from "@/lib/store/chatStore";
 import { chatApi } from "@/lib/api/chatApi";
@@ -24,7 +24,7 @@ export default function ChatInterface() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const { theme, toggleTheme } = useThemeHook();
-  const { gender } = useThemeContext();
+  const { theme: themeConfig, gender } = useThemeContext();
   const { user } = useLocalAuth();
   const router = useRouter();
   
@@ -188,56 +188,114 @@ export default function ChatInterface() {
   }, []);
 
   return (
-    <div className={`flex h-full transition-colors duration-300 ${
-      theme === 'dark' 
-        ? 'bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950' 
-        : 'bg-gradient-to-b from-gray-50 via-white to-gray-50'
-    }`}>
+    <div 
+      className="flex h-full transition-colors duration-300 relative overflow-hidden"
+      style={{ 
+        background: 'linear-gradient(135deg, #A8CFFB 0%, #C4D7F7 50%, #D3C7F8 100%)',
+        fontFamily: "'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif"
+      }}
+    >
+      {/* Floating Light Particles - Match Dashboard */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(25)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full animate-pulse"
+            style={{
+              width: Math.random() * 4 + 2 + 'px',
+              height: Math.random() * 4 + 2 + 'px',
+              background: 'radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%)',
+              boxShadow: '0 0 12px rgba(255,255,255,0.6)',
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${4 + Math.random() * 2}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Soft Gradient Orbs */}
+      <div className="absolute top-10 right-10 w-[400px] h-[400px] rounded-full blur-3xl opacity-60" 
+        style={{ background: 'radial-gradient(circle, rgba(168, 207, 251, 0.4) 0%, rgba(168, 207, 251, 0) 70%)' }} />
+      <div className="absolute bottom-10 left-10 w-[350px] h-[350px] rounded-full blur-3xl opacity-60" 
+        style={{ background: 'radial-gradient(circle, rgba(211, 199, 248, 0.4) 0%, rgba(211, 199, 248, 0) 70%)' }} />
+
       {/* Avatar Sidebar */}
-      <div className={`hidden lg:flex flex-col w-80 border-r ${
-        theme === 'dark' ? 'border-gray-800 bg-gray-900/50' : 'border-gray-200 bg-gray-50/50'
-      }`}>
+      <div 
+        className="hidden lg:flex flex-col w-80 border-r backdrop-blur-2xl relative z-10"
+        style={{
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.25) 100%)',
+          borderColor: 'rgba(255, 255, 255, 0.4)',
+          boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.9)'
+        }}
+      >
         <div className="p-6 flex flex-col items-center justify-center h-full">
-          <div className={`text-center mb-6`}>
-            <h3 className={`text-xl font-bold mb-2 ${
-              theme === 'dark' ? 'text-white' : 'text-gray-900'
-            }`}>
+          <div className="text-center mb-6">
+            <h3 
+              className="text-xl font-bold mb-2"
+              style={{ color: '#0f172a' }}
+            >
               EdgeSoul
             </h3>
-            <p className={`text-sm ${
-              theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-            }`}>
+            <p 
+              className="text-sm"
+              style={{ color: '#64748b' }}
+            >
               Your Emotional AI Companion
             </p>
           </div>
           
-          {/* Animated Avatar */}
-          <div className="mb-6">
-            <Avatar2D 
-              emotion={currentEmotion?.primary.toLowerCase() || 'neutral'} 
-              size={200}
+          {/* Animated Avatar with Soft Glow */}
+          <div className="mb-6 relative">
+            <div 
+              className="absolute inset-0 rounded-full blur-2xl"
+              style={{ 
+                background: 'radial-gradient(circle, rgba(168, 207, 251, 0.6) 0%, rgba(168, 207, 251, 0) 70%)',
+                transform: 'scale(1.2)'
+              }}
             />
+            <div className="relative backdrop-blur-xl rounded-3xl p-6"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+                border: '1px solid rgba(255, 255, 255, 0.7)'
+              }}>
+              <GenderAvatar 
+                emotion={currentEmotion?.primary.toLowerCase() || 'neutral'} 
+                gender={gender}
+                size={180}
+              />
+            </div>
           </div>
 
-          {/* Emotion Info */}
+          {/* Emotion Info - Frosted Glass Pill */}
           {currentEmotion && (
-            <div className={`w-full p-4 rounded-xl ${
-              theme === 'dark' ? 'bg-gray-800/50' : 'bg-white/50'
-            }`}>
+            <div 
+              className="w-full px-6 py-4 rounded-2xl backdrop-blur-2xl"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+                border: '1px solid rgba(255, 255, 255, 0.7)'
+              }}
+            >
               <div className="text-center">
-                <p className={`text-sm font-medium mb-1 ${
-                  theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                }`}>
+                <p 
+                  className="text-xs font-semibold mb-2 tracking-wider uppercase"
+                  style={{ color: '#64748b' }}
+                >
                   Current Emotion
                 </p>
-                <p className={`text-2xl font-bold capitalize ${
-                  theme === 'dark' ? 'text-white' : 'text-gray-900'
-                }`}>
+                <p 
+                  className="text-2xl font-bold capitalize"
+                  style={{ color: '#0f172a' }}
+                >
                   {currentEmotion.primary}
                 </p>
-                <p className={`text-xs mt-1 ${
-                  theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-                }`}>
+                <p 
+                  className="text-xs mt-1 font-medium"
+                  style={{ color: '#64748b' }}
+                >
                   {Math.round(currentEmotion.confidence)}% confidence
                 </p>
               </div>
@@ -247,68 +305,89 @@ export default function ChatInterface() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex flex-col flex-1">
-        {/* Header - ChatGPT Style */}
-        <header className={`sticky top-0 z-10 border-b backdrop-blur-sm ${
-          theme === 'dark' 
-            ? 'border-gray-800 bg-gray-900/80' 
-            : 'border-gray-200 bg-white/80'
-        }`}>
+      <div className="flex flex-col flex-1 relative z-10">
+        {/* Header - Frosted Glass Navigation */}
+        <header 
+          className="sticky top-0 z-10 border-b backdrop-blur-2xl"
+          style={{
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.35) 100%)',
+            borderColor: 'rgba(255, 255, 255, 0.4)',
+            boxShadow: '0 4px 18px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9)'
+          }}
+        >
           <div className="container mx-auto max-w-4xl px-4 py-3 sm:py-4">
             <div className="flex items-center justify-between">
               {/* Logo & Title */}
               <div className="flex items-center gap-3">
                 {/* Mobile Avatar */}
                 <div className="lg:hidden">
-                  <Avatar2D 
-                    emotion={currentEmotion?.primary?.toLowerCase?.() || 'neutral'} 
-                    size={60}
-                  />
+                  <div className="relative">
+                    <div 
+                      className="absolute inset-0 rounded-full blur-xl"
+                      style={{ 
+                        background: 'radial-gradient(circle, rgba(168, 207, 251, 0.5) 0%, rgba(168, 207, 251, 0) 70%)'
+                      }}
+                    />
+                    <div className="relative">
+                      <GenderAvatar 
+                        emotion={currentEmotion?.primary?.toLowerCase?.() || 'neutral'} 
+                        gender={gender}
+                        size={60}
+                      />
+                    </div>
+                  </div>
                 </div>
                 
                 <div className="relative hidden lg:block">
-                  <div className={`absolute inset-0 rounded-full blur-md ${
-                    theme === 'dark' ? 'bg-purple-500/30' : 'bg-purple-500/20'
-                  }`}></div>
-                  <div className={`relative flex h-10 w-10 items-center justify-center rounded-full ${
-                    theme === 'dark' 
-                      ? 'bg-gradient-to-br from-purple-600 to-pink-600' 
-                      : 'bg-gradient-to-br from-purple-500 to-pink-500'
-                  }`}>
+                  <div 
+                    className="absolute inset-0 rounded-xl blur-md"
+                    style={{ background: 'linear-gradient(135deg, #358BFF 0%, #79B7FF 100%)' }}
+                  ></div>
+                  <div 
+                    className="relative flex h-10 w-10 items-center justify-center rounded-xl"
+                    style={{ 
+                      background: 'linear-gradient(135deg, #358BFF 0%, #79B7FF 100%)',
+                      boxShadow: '0 4px 14px rgba(53, 139, 255, 0.35)'
+                    }}
+                  >
                     <Sparkles className="h-5 w-5 text-white" />
                   </div>
                 </div>
                 <div>
-                  <h1 className={`text-lg sm:text-xl font-bold ${
-                    theme === 'dark' ? 'text-white' : 'text-gray-900'
-                  }`}>
+                  <h1 
+                    className="text-lg sm:text-xl font-bold"
+                    style={{ color: '#0f172a' }}
+                  >
                     EdgeSoul
                   </h1>
                   {currentEmotion && (
-                    <p className={`text-xs sm:text-sm ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                    }`}>
+                    <p 
+                      className="text-xs sm:text-sm"
+                      style={{ color: '#64748b' }}
+                    >
                       Feeling: {currentEmotion.primary} {getEmotionEmoji(currentEmotion.primary)}
                     </p>
                   )}
                 </div>
               </div>
 
-              {/* Theme Toggle & Navigation */}
+              {/* Actions */}
               <div className="flex items-center gap-2">
                 {/* Voice Toggle */}
                 {isTextToSpeechSupported() && (
                   <button
                     onClick={toggleVoice}
-                    className={`rounded-full p-2 transition-all hover:scale-110 ${
-                      voiceEnabled
-                        ? theme === 'dark'
-                          ? 'bg-purple-600 text-white hover:bg-purple-700'
-                          : 'bg-purple-500 text-white hover:bg-purple-600'
-                        : theme === 'dark'
-                          ? 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                          : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                    }`}
+                    className="rounded-xl p-2 transition-all hover:scale-105"
+                    style={{
+                      background: voiceEnabled 
+                        ? 'linear-gradient(135deg, #358BFF 0%, #79B7FF 100%)' 
+                        : 'rgba(255, 255, 255, 0.6)',
+                      color: voiceEnabled ? 'white' : '#64748b',
+                      boxShadow: voiceEnabled 
+                        ? '0 4px 14px rgba(53, 139, 255, 0.35)' 
+                        : '0 2px 8px rgba(0, 0, 0, 0.05)',
+                      border: '1px solid rgba(255, 255, 255, 0.7)'
+                    }}
                     aria-label={voiceEnabled ? 'Disable voice' : 'Enable voice'}
                     title={voiceEnabled ? 'Voice enabled (bot will speak)' : 'Voice disabled'}
                   >
@@ -319,8 +398,8 @@ export default function ChatInterface() {
                     )}
                     {isSpeaking && (
                       <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-purple-500"></span>
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: '#358BFF' }}></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3" style={{ backgroundColor: '#358BFF' }}></span>
                       </span>
                     )}
                   </button>
@@ -329,11 +408,21 @@ export default function ChatInterface() {
                 {/* Back to Dashboard Button */}
                 <button
                   onClick={() => router.push('/dashboard')}
-                  className={`hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
-                    theme === 'dark' 
-                      ? 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
+                  className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all hover:scale-105"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.6)',
+                    color: '#0f172a',
+                    border: '1px solid rgba(255, 255, 255, 0.7)',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)';
+                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.6)';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.05)';
+                  }}
                   aria-label="Back to Dashboard"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -345,11 +434,14 @@ export default function ChatInterface() {
                 {/* Mobile Back Button */}
                 <button
                   onClick={() => router.push('/dashboard')}
-                  className={`sm:hidden rounded-full p-2 transition-all hover:scale-110 ${
-                    theme === 'dark' 
-                      ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
+                  className="sm:hidden rounded-xl p-2 transition-all hover:scale-105"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.6)',
+                    color: '#0f172a',
+                    border: '1px solid rgba(255, 255, 255, 0.7)'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.6)'}
                   aria-label="Back to Dashboard"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -359,11 +451,21 @@ export default function ChatInterface() {
 
                 <button
                   onClick={toggleTheme}
-                  className={`rounded-full p-2 transition-all hover:scale-110 ${
-                    theme === 'dark' 
-                      ? 'bg-gray-800 text-yellow-400 hover:bg-gray-700' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
+                  className="rounded-xl p-2 transition-all hover:scale-105"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.6)',
+                    color: theme === 'dark' ? '#FCD34D' : '#64748b',
+                    border: '1px solid rgba(255, 255, 255, 0.7)',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)';
+                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.6)';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.05)';
+                  }}
                   aria-label="Toggle theme"
                 >
                   {theme === 'dark' ? (
@@ -376,11 +478,21 @@ export default function ChatInterface() {
                 {/* Profile Button */}
                 <button
                   onClick={() => router.push('/profile')}
-                  className={`rounded-full p-2 transition-all hover:scale-110 ${
-                    theme === 'dark' 
-                      ? 'bg-gray-800 text-purple-400 hover:bg-gray-700' 
-                      : 'bg-gray-100 text-purple-600 hover:bg-gray-200'
-                  }`}
+                  className="rounded-xl p-2 transition-all hover:scale-105"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.6)',
+                    color: '#64748b',
+                    border: '1px solid rgba(255, 255, 255, 0.7)',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)';
+                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.6)';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.05)';
+                  }}
                   aria-label="Profile"
                 >
                   <User className="h-5 w-5" />
@@ -400,19 +512,33 @@ export default function ChatInterface() {
           />
         </div>
 
-        {/* Input Area - ChatGPT Style */}
-        <div className={`sticky bottom-0 border-t backdrop-blur-sm ${
-          theme === 'dark' 
-            ? 'border-gray-800 bg-gray-900/80' 
-            : 'border-gray-200 bg-white/80'
-        }`}>
+        {/* Input Area - Frosted Glass */}
+        <div 
+          className="sticky bottom-0 border-t backdrop-blur-2xl"
+          style={{
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.35) 100%)',
+            borderColor: 'rgba(255, 255, 255, 0.4)',
+            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.9)'
+          }}
+        >
         <div className="container mx-auto max-w-4xl px-4 py-4">
           <form onSubmit={handleSubmit}>
-            <div className={`relative flex items-end gap-2 rounded-2xl border-2 transition-all ${
-              theme === 'dark'
-                ? 'border-gray-700 bg-gray-800 focus-within:border-purple-500'
-                : 'border-gray-200 bg-white focus-within:border-purple-400 shadow-lg'
-            }`}>
+            <div 
+              className="relative flex items-end gap-2 rounded-2xl transition-all"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.5) 100%)',
+                border: '1px solid rgba(255, 255, 255, 0.7)',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(53, 139, 255, 0.25)';
+                e.currentTarget.style.borderColor = 'rgba(53, 139, 255, 0.4)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.7)';
+              }}
+            >
               {/* Voice Input Button */}
               <div className="ml-2 mb-2">
                 <VoiceButton
@@ -428,25 +554,33 @@ export default function ChatInterface() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Message EdgeSoul..."
-                className={`flex-1 resize-none bg-transparent px-4 py-3 sm:py-4 outline-none ${
-                  theme === 'dark' ? 'text-white placeholder-gray-500' : 'text-gray-900 placeholder-gray-400'
-                }`}
+                className="flex-1 resize-none bg-transparent px-4 py-3 sm:py-4 outline-none"
                 rows={1}
-                style={{ maxHeight: "200px" }}
+                style={{ maxHeight: "200px", color: '#0f172a' }}
                 disabled={isLoading}
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isLoading}
-                className={`m-2 rounded-xl p-2 sm:p-2.5 transition-all ${
-                  !input.trim() || isLoading
-                    ? theme === 'dark' 
-                      ? 'bg-gray-700 text-gray-500 cursor-not-allowed' 
-                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : theme === 'dark'
-                      ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white hover:scale-105 hover:shadow-lg'
-                      : 'bg-gradient-to-br from-purple-500 to-pink-500 text-white hover:scale-105 hover:shadow-xl'
-                }`}
+                className="m-2 rounded-xl p-2 sm:p-2.5 transition-all"
+                style={{
+                  background: !input.trim() || isLoading 
+                    ? 'rgba(168, 207, 251, 0.3)' 
+                    : 'linear-gradient(135deg, #358BFF 0%, #79B7FF 100%)',
+                  color: 'white',
+                  cursor: !input.trim() || isLoading ? 'not-allowed' : 'pointer',
+                  boxShadow: !input.trim() || isLoading ? 'none' : '0 4px 14px rgba(53, 139, 255, 0.35)'
+                }}
+                onMouseEnter={(e) => {
+                  if (input.trim() && !isLoading) {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(53, 139, 255, 0.45)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.boxShadow = !input.trim() || isLoading ? 'none' : '0 4px 14px rgba(53, 139, 255, 0.35)';
+                }}
               >
                 {isLoading ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
@@ -456,13 +590,14 @@ export default function ChatInterface() {
               </button>
             </div>
           </form>
-          <p className={`mt-2 text-center text-xs ${
-            theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-          }`}>
+          <p 
+            className="mt-2 text-center text-xs"
+            style={{ color: '#64748b' }}
+          >
             {voiceEnabled && isSpeaking ? (
-              <span className="text-purple-500 font-medium">🔊 Speaking...</span>
+              <span style={{ color: '#358BFF' }} className="font-medium">🔊 Speaking...</span>
             ) : voiceEnabled ? (
-              <span className="text-purple-500 font-medium">🎤 Voice enabled - Click mic to speak (needs internet) | Bot speaks offline ✓</span>
+              <span style={{ color: '#358BFF' }} className="font-medium">🎤 Voice enabled - Click mic to speak (needs internet) | Bot speaks offline ✓</span>
             ) : (
               'EdgeSoul can make mistakes. Check important info.'
             )}

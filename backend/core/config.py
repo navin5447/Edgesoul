@@ -45,15 +45,20 @@ class Settings(BaseSettings):
     USE_LOCAL_LLM: bool = False  # Disabled GPT-2, using fallback knowledge base
     
     # Ollama Optimization Settings
-    OLLAMA_NUM_PREDICT: int = 512      # Token limit (increased from 256 for longer responses)
-    OLLAMA_NUM_CTX: int = 4096         # Context window size
+    OLLAMA_MODEL_FAST: str = "tinyllama"     # DISABLED - too slow and stupid
+    OLLAMA_MODEL_QUALITY: str = "phi3:mini"  # Quality model - ONLY model used
+    OLLAMA_NUM_PREDICT: int = 80       # Token limit - REDUCED for speed (~20s)
+    OLLAMA_NUM_PREDICT_COMPLEX: int = 150  # For code generation (~40s)
+    OLLAMA_NUM_CTX: int = 2048         # Context window (reduced from 4096 for speed)
     OLLAMA_NUM_BATCH: int = 512        # Batch size for faster processing
     OLLAMA_NUM_GPU: int = 1            # Number of GPUs to use (0 for CPU only)
     OLLAMA_NUM_THREAD: int = 8         # CPU threads for processing
-    OLLAMA_TEMPERATURE: float = 0.7    # Response creativity (0.0-1.0)
+    OLLAMA_TEMPERATURE: float = 0.3    # Lower = faster, more focused (was 0.7)
     OLLAMA_TOP_K: int = 40             # Top-K sampling
-    OLLAMA_TOP_P: float = 0.9          # Top-P (nucleus) sampling
+    OLLAMA_TOP_P: float = 0.8          # Top-P sampling (reduced from 0.9 for speed)
     OLLAMA_REPEAT_PENALTY: float = 1.1 # Penalty for repetition
+    OLLAMA_TIMEOUT_FAST: int = 15      # Timeout for fast model
+    OLLAMA_TIMEOUT_QUALITY: int = 30   # Timeout for quality model
     
     # Performance Settings
     ENABLE_PARALLEL_PROCESSING: bool = True   # Process emotion + context in parallel

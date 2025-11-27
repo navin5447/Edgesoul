@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocalAuth } from '@/context/LocalAuthContext';
 import { useRouter } from 'next/navigation';
 import { FaUser, FaSave, FaSpinner } from 'react-icons/fa';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import DataExportImport from '@/components/DataExportImport';
 
 interface UserProfile {
   user_id: string;
@@ -28,7 +29,14 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
-  const fetchProfile = useCallback(async () => {
+  // Fetch profile on mount
+  useEffect(() => {
+    if (user) {
+      fetchProfile();
+    }
+  }, [user]);
+
+  const fetchProfile = async () => {
     try {
       setLoading(true);
       
@@ -88,13 +96,7 @@ export default function ProfilePage() {
     } finally {
       setLoading(false);
     }
-  }, [user]);
-
-  useEffect(() => {
-    if (user) {
-      fetchProfile();
-    }
-  }, [user, fetchProfile]);
+  };
 
   const handleSliderChange = (key: keyof UserProfile['personality'], value: number) => {
     if (!profile) return;
@@ -320,6 +322,11 @@ export default function ProfilePage() {
               )}
             </button>
           </div>
+        </div>
+
+        {/* Data Export/Import Section */}
+        <div className="bg-white rounded-3xl shadow-xl p-8">
+          <DataExportImport />
         </div>
       </div>
     </div>

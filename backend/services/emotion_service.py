@@ -142,6 +142,27 @@ class EmotionService:
                 },
             }
         
+        # Fear/anxiety expressions (MUST detect BEFORE ONNX model runs!)
+        fear_patterns = [
+            "afraid", "scared", "worried", "anxious", "nervous", "terrified", "panic",
+            "fear", "fearful", "frightened", "in fear", "am in fear", "i'm in fear",
+            "feel fear", "feeling fear", "feeling anxious", "feeling nervous"
+        ]
+        
+        if any(pattern in text_lower for pattern in fear_patterns):
+            return {
+                "primary": "fear",
+                "confidence": 0.88,
+                "all": {
+                    "fear": 0.88,
+                    "sadness": 0.05,
+                    "neutral": 0.03,
+                    "anger": 0.02,
+                    "surprise": 0.01,
+                    "joy": 0.01
+                },
+            }
+        
         # Casual states (hungry, tired, bored) are NEUTRAL not anger
         casual_states = ["hungry", "thirsty", "tired", "sleepy", "bored", "busy"]
         if any(state in text_lower for state in casual_states):
@@ -365,7 +386,7 @@ class EmotionService:
         joy_keywords = ["happy", "joy", "excited", "great", "wonderful", "love", "awesome", "fantastic"]
         sad_keywords = ["sad", "unhappy", "depress", "down", "sorry", "disappointed", "hurt", "nobody", "alone", "hopeless", "no one", "noone", "isolated", "lonely"]
         anger_keywords = ["angry", "mad", "furious", "annoyed", "frustrated", "hate", "disgusted"]
-        fear_keywords = ["afraid", "scared", "worried", "anxious", "nervous", "terrified", "panic"]
+        fear_keywords = ["afraid", "scared", "worried", "anxious", "nervous", "terrified", "panic", "fear", "fearful", "frightened"]
         surprise_keywords = ["wow", "amazing", "surprised", "unexpected", "incredible", "unbelievable"]
         
         scores = {
@@ -413,7 +434,7 @@ class EmotionService:
         wrongly_accused = ["i did not", "i didn't", "but i did not", "but i didn't", "not my fault but", "didn't do anything", "did nothing wrong"]
         
         # Fear/anxiety indicators that might be misclassified as anger
-        fear_indicators = ["scared", "afraid", "worried", "anxious", "nervous", "terrified", "panic", "what if", "afraid of"]
+        fear_indicators = ["scared", "afraid", "worried", "anxious", "nervous", "terrified", "panic", "what if", "afraid of", "fear", "fearful", "frightened", "in fear"]
         
         # Joy indicators for positive reinforcement (might be misclassified as neutral)
         joy_indicators = ["happy", "excited", "awesome", "great", "wonderful", "love it", "amazing", "fantastic", "brilliant"]

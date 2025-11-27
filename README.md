@@ -382,7 +382,7 @@ npm run build:linux    # Linux AppImage
 | **Internet** | Offline after setup ✅ | Always needs internet ❌ |
 | **Emotion Detection** | Advanced (85%+) ✅ | Basic ❌ |
 | **Response Speed** | 3-20s ⏱️ | 2-3s ⚡ |
-| **Knowledge** | Good ⭐⭐⭐ | Excellent ⭐⭐⭐⭐⭐ |
+| **Knowledge** | Good ⭐⭐⭐ | Excellent ⭐⭐⭐⭐⭐⭐ |
 | **Customization** | Full control ✅ | Limited ❌ |
 
 ---

@@ -189,3 +189,102 @@ async def get_user_stats(user_id: str):
     except Exception as e:
         logger.error(f"Error getting stats: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/conversations/{user_id}")
+async def get_user_conversations(user_id: str):
+    """Get all user conversations for export"""
+    try:
+        # Get conversation history from memory service
+        conversations = memory_service.get_recent_memories(
+            user_id=user_id,
+            memory_types=[MemoryType.CONVERSATION],
+            days=365,  # Get all conversations from past year
+            limit=1000
+        )
+        return conversations
+    except Exception as e:
+        logger.error(f"Error getting conversations: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/emotions/{user_id}")
+async def get_user_emotions(user_id: str):
+    """Get all user emotions for export"""
+    try:
+        # Get emotion history from memory service
+        emotions = memory_service.get_recent_memories(
+            user_id=user_id,
+            memory_types=[MemoryType.EMOTION],
+            days=365,  # Get all emotions from past year
+            limit=1000
+        )
+        return emotions
+    except Exception as e:
+        logger.error(f"Error getting emotions: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/memory/{user_id}")
+async def create_memory(user_id: str, memory_data: dict):
+    """Create a new memory (for import)"""
+    try:
+        # Convert dict to Memory object
+        memory = Memory(
+            user_id=user_id,
+            memory_type=MemoryType(memory_data.get('memory_type', 'fact')),
+            content=memory_data.get('content', ''),
+            importance=memory_data.get('importance', 0.5),
+            timestamp=memory_data.get('timestamp'),
+            metadata=memory_data.get('metadata', {})
+        )
+        
+        # Store the memory
+        memory_service.add_memory(memory)
+        return {"status": "success", "message": "Memory created"}
+    except Exception as e:
+        logger.error(f"Error creating memory: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/conversation/{user_id}")
+async def create_conversation(user_id: str, conversation_data: dict):
+    """Create a new conversation entry (for import)"""
+    try:
+        # Create conversation memory
+        memory = Memory(
+            user_id=user_id,
+            memory_type=MemoryType.CONVERSATION,
+            content=conversation_data.get('content', ''),
+            importance=conversation_data.get('importance', 0.5),
+            timestamp=conversation_data.get('timestamp'),
+            metadata=conversation_data.get('metadata', {})
+        )
+        
+        memory_service.add_memory(memory)
+        return {"status": "success", "message": "Conversation created"}
+    except Exception as e:
+        logger.error(f"Error creating conversation: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/emotion/{user_id}")
+async def create_emotion(user_id: str, emotion_data: dict):
+    """Create a new emotion entry (for import)"""
+    try:
+        # Create emotion memory
+        memory = Memory(
+            user_id=user_id,
+            memory_type=MemoryType.EMOTION,
+            content=emotion_data.get('content', ''),
+            importance=emotion_data.get('importance', 0.5),
+            timestamp=emotion_data.get('timestamp'),
+            metadata=emotion_data.get('metadata', {})
+        )
+        
+        memory_service.add_memory(memory)
+        return {"status": "success", "message": "Emotion created"}
+    except Exception as e:
+        logger.error(f"Error creating emotion: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))

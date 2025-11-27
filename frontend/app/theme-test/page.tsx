@@ -142,7 +142,7 @@ export default function ThemeTestPage() {
             }}
           >
             <div className="font-bold mb-2">EdgeSoul Response</div>
-            <div>This is how EdgeSoul&apos;s responses will appear!</div>
+            <div>This is how EdgeSoul's responses will appear!</div>
           </div>
         </div>
 

@@ -56,64 +56,64 @@ export interface ThemeConfig {
 
 export const themes: Record<GenderType, ThemeConfig> = {
   male: {
-    // Colors - Blue/Dark masculine tones
-    primary: '#1E40AF',
-    primaryLight: '#3B82F6',
-    primaryDark: '#1E3A8A',
-    secondary: '#334155',
-    accent: '#0EA5E9',
-    background: '#0F172A',
-    backgroundSecondary: '#1E293B',
-    gradient: 'linear-gradient(135deg, #1E40AF 0%, #334155 100%)',
+    // Colors - Calm Professional Blue (Muted & Easy on Eyes)
+    primary: '#5B7AB8',      // More muted blue
+    primaryLight: '#8A9DC4', // Softer light blue
+    primaryDark: '#3E5A85',  // Deeper muted blue
+    secondary: '#6D7E9F',    // More muted slate blue
+    accent: '#7A9DC4',       // Calmer sky blue
+    background: '#F0F2F5',   // Less bright off-white
+    backgroundSecondary: '#DDE3EB', // Softer blue-gray
+    gradient: 'linear-gradient(135deg, #E5EDF3 0%, #D8E3EE 100%)', // More subtle gradient
     
-    // Typography - Bold, strong
-    fontFamily: '"Roboto", "Inter", system-ui, sans-serif',
+    // Typography - Clean & readable
+    fontFamily: '"Inter", "Poppins", system-ui, sans-serif',
     fontWeight: {
-      normal: 500,
-      medium: 600,
-      bold: 700,
+      normal: 400,
+      medium: 500,
+      bold: 600,
     },
     
-    // Spacing - Sharp edges
+    // Spacing - Soft, rounded (modern)
     borderRadius: {
-      sm: '4px',
-      md: '8px',
-      lg: '12px',
-      xl: '16px',
+      sm: '8px',
+      md: '12px',
+      lg: '16px',
+      xl: '24px',
     },
     
-    // Shadows - Strong, defined
-    shadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)',
-    shadowHover: '0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3)',
+    // Shadows - Very soft, minimal
+    shadow: '0 2px 8px rgba(91, 122, 184, 0.08), 0 1px 3px rgba(91, 122, 184, 0.05)',
+    shadowHover: '0 4px 16px rgba(91, 122, 184, 0.12), 0 2px 6px rgba(91, 122, 184, 0.08)',
     
-    // Chat bubbles - Angular
+    // Chat bubbles - Soft rounded
     chatBubble: {
-      user: '#1E40AF',
-      assistant: '#334155',
-      borderRadius: '12px',
+      user: '#5B7AB8',
+      assistant: '#F8F9FA',
+      borderRadius: '16px',
     },
     
-    // Emotions - Cooler tones
+    // Emotions - Very soft, muted tones
     emotions: {
-      joy: '#10B981',
-      sadness: '#3B82F6',
-      anger: '#EF4444',
-      fear: '#8B5CF6',
-      surprise: '#F59E0B',
-      neutral: '#6B7280',
+      joy: '#7AC49D',       // Muted mint green
+      sadness: '#5B7AB8',   // Muted blue
+      anger: '#D19090',     // Muted coral
+      fear: '#A094C0',      // Muted lavender
+      surprise: '#E0C86E',  // Muted yellow
+      neutral: '#9EAFC2',   // Muted gray-blue
     },
   },
   
   female: {
-    // Colors - Pink/Rose feminine palette (warm, inviting, elegant)
-    primary: '#EC4899',      // Rose Pink - primary color
-    primaryLight: '#F9A8D4',  // Light Pink - softer variant
-    primaryDark: '#DB2777',   // Deep Rose - darker variant
-    secondary: '#F472B6',     // Bright Pink - secondary accent
-    accent: '#FDE047',        // Soft Yellow - complementary accent
-    background: '#1F0A28',    // Deep Purple-Black - elegant base
-    backgroundSecondary: '#2D1440', // Dark Purple - secondary background
-    gradient: 'linear-gradient(135deg, #1F0A28 0%, #2D1440 50%, #EC4899 100%)',
+    // Colors - Muted Pink/Lavender (Gentle & Elegant)
+    primary: '#D090B8',      // More muted rose pink
+    primaryLight: '#E0B5D4', // Softer pastel pink
+    primaryDark: '#B87098',  // Deeper muted pink
+    secondary: '#B594C4',    // Muted lavender
+    accent: '#E0C86E',       // Softer warm yellow
+    background: '#F5F0F2',   // Less bright off-white
+    backgroundSecondary: '#EDE3EB', // Softer pink-white
+    gradient: 'linear-gradient(135deg, #F5E8F0 0%, #E8D8E5 100%)', // More subtle gradient
     
     // Typography - Elegant, softer
     fontFamily: '"Inter", "Poppins", system-ui, sans-serif',
@@ -131,41 +131,41 @@ export const themes: Record<GenderType, ThemeConfig> = {
       xl: '24px',
     },
     
-    // Shadows - Soft, gentle
-    shadow: '0 4px 6px -1px rgba(236, 72, 153, 0.15), 0 2px 4px -1px rgba(192, 132, 252, 0.1)',
-    shadowHover: '0 10px 15px -3px rgba(236, 72, 153, 0.2), 0 4px 6px -2px rgba(192, 132, 252, 0.15)',
+    // Shadows - Very soft, minimal
+    shadow: '0 2px 8px rgba(208, 144, 184, 0.08), 0 1px 3px rgba(208, 144, 184, 0.05)',
+    shadowHover: '0 4px 16px rgba(208, 144, 184, 0.12), 0 2px 6px rgba(208, 144, 184, 0.08)',
     
-    // Chat bubbles - Very rounded (soft, feminine)
+    // Chat bubbles - Extra soft, rounded
     chatBubble: {
-      user: '#EC4899',        // Rose Pink
-      assistant: '#F472B6',    // Bright Pink
-      borderRadius: '24px',    // Extra rounded for softness
+      user: '#D090B8',        // Muted rose pink
+      assistant: '#FAF7F8',    // Soft off-white
+      borderRadius: '20px',    // Extra rounded for softness
     },
     
-    // Emotions - Pink/Purple warm tones
+    // Emotions - Muted Pink/Lavender tones
     emotions: {
-      joy: '#F472B6',         // Bright Pink - happiness
-      sadness: '#C084FC',     // Lavender - gentle melancholy
-      anger: '#FB7185',       // Coral Pink - softened intensity
-      fear: '#E879F9',        // Bright Magenta - visible but not harsh
-      surprise: '#FDE047',    // Soft Yellow - excitement
-      neutral: '#F9A8D4',     // Light Pink - calm
+      joy: '#E0C86E',         // Muted warm yellow
+      sadness: '#94B4D4',     // Muted sky blue
+      anger: '#D19090',       // Muted coral
+      fear: '#B594C4',        // Muted lavender
+      surprise: '#7AC49D',    // Muted mint
+      neutral: '#C8B4C8',     // Muted mauve
     },
   },
   
   other: {
-    // Colors - Green/Neutral inclusive tones
-    primary: '#10B981',
-    primaryLight: '#34D399',
-    primaryDark: '#059669',
-    secondary: '#6B7280',
-    accent: '#14B8A6',
-    background: '#F9FAFB',
-    backgroundSecondary: '#F3F4F6',
-    gradient: 'linear-gradient(135deg, #10B981 0%, #14B8A6 100%)',
+    // Colors - Muted Purple/Neutral (Inclusive & Calming)
+    primary: '#8878A8',      // More muted purple
+    primaryLight: '#A894B8', // Softer lavender
+    primaryDark: '#685888',  // Deeper muted purple
+    secondary: '#94A4B3',    // Softer gray-blue
+    accent: '#7AC49D',       // Muted mint
+    background: '#F2F0F5',   // Less bright gray-white
+    backgroundSecondary: '#E3DFE8', // Softer purple-white
+    gradient: 'linear-gradient(135deg, #E8E0F0 0%, #D8D0E5 100%)', // More subtle gradient
     
     // Typography - Balanced
-    fontFamily: '"Inter", system-ui, sans-serif',
+    fontFamily: '"Inter", "Poppins", system-ui, sans-serif',
     fontWeight: {
       normal: 400,
       medium: 500,
@@ -174,70 +174,70 @@ export const themes: Record<GenderType, ThemeConfig> = {
     
     // Spacing - Medium rounded
     borderRadius: {
-      sm: '6px',
+      sm: '8px',
       md: '12px',
       lg: '16px',
       xl: '20px',
     },
     
-    // Shadows - Balanced
-    shadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-    shadowHover: '0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1)',
+    // Shadows - Very soft, minimal
+    shadow: '0 2px 8px rgba(136, 120, 168, 0.08), 0 1px 3px rgba(136, 120, 168, 0.05)',
+    shadowHover: '0 4px 16px rgba(136, 120, 168, 0.12), 0 2px 6px rgba(136, 120, 168, 0.08)',
     
     // Chat bubbles - Medium rounded
     chatBubble: {
-      user: '#10B981',
-      assistant: '#6B7280',
+      user: '#8878A8',
+      assistant: '#F8F7FA',
       borderRadius: '16px',
     },
     
-    // Emotions - Balanced tones
+    // Emotions - Muted balanced tones
     emotions: {
-      joy: '#10B981',
-      sadness: '#3B82F6',
-      anger: '#F59E0B',
-      fear: '#8B5CF6',
-      surprise: '#14B8A6',
-      neutral: '#6B7280',
+      joy: '#7AC49D',      // Muted mint
+      sadness: '#88A4C2',  // Muted blue-gray
+      anger: '#D19090',    // Muted coral
+      fear: '#A894B8',     // Muted lavender
+      surprise: '#E0C86E', // Muted yellow
+      neutral: '#9EAFC2',  // Muted neutral
     },
   },
   
   not_set: {
-    // Default theme - same as 'other'
-    primary: '#10B981',
-    primaryLight: '#34D399',
-    primaryDark: '#059669',
-    secondary: '#6B7280',
-    accent: '#14B8A6',
-    background: '#F9FAFB',
-    backgroundSecondary: '#F3F4F6',
-    gradient: 'linear-gradient(135deg, #10B981 0%, #14B8A6 100%)',
-    fontFamily: '"Inter", system-ui, sans-serif',
+    // Default theme - Muted Blue (same style as male)
+    primary: '#5B7AB8',
+    primaryLight: '#8A9DC4',
+    primaryDark: '#3E5A85',
+    secondary: '#6D7E9F',
+    accent: '#7A9DC4',
+    background: '#F0F2F5',
+    backgroundSecondary: '#DDE3EB',
+    gradient: 'linear-gradient(135deg, #E5EDF3 0%, #D8E3EE 100%)',
+    fontFamily: '"Inter", "Poppins", system-ui, sans-serif',
     fontWeight: {
       normal: 400,
       medium: 500,
       bold: 600,
     },
     borderRadius: {
-      sm: '6px',
+      sm: '8px',
       md: '12px',
       lg: '16px',
-      xl: '20px',
+      xl: '24px',
     },
-    shadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-    shadowHover: '0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1)',
+    shadow: '0 2px 8px rgba(91, 122, 184, 0.08), 0 1px 3px rgba(91, 122, 184, 0.05)',
+    shadowHover: '0 4px 16px rgba(91, 122, 184, 0.12), 0 2px 6px rgba(91, 122, 184, 0.08)',
     chatBubble: {
-      user: '#10B981',
-      assistant: '#6B7280',
+      user: '#5B7AB8',
+      assistant: '#F8F9FA',
       borderRadius: '16px',
     },
     emotions: {
-      joy: '#10B981',
-      sadness: '#3B82F6',
-      anger: '#F59E0B',
-      fear: '#8B5CF6',
-      surprise: '#14B8A6',
-      neutral: '#6B7280',
+      joy: '#7AC49D',
+      sadness: '#5B7AB8',
+      anger: '#D19090',
+      fear: '#A094C0',
+      surprise: '#E0C86E',
+      neutral: '#9EAFC2',
     },
   },
 };

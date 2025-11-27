@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import ReactMarkdown from "react-markdown";
 import { Theme } from "@/hooks/useTheme";
 import { motion } from "framer-motion";
+import { useTheme } from "@/context/ThemeContext";
 
 interface MessageBubbleProps {
   message: Message;
@@ -28,6 +29,7 @@ const emotionEmojis: Record<string, string> = {
 export default function MessageBubble({ message, theme, index }: MessageBubbleProps) {
   const isUser = message.role === "user";
   const emotionEmoji = message.emotion ? emotionEmojis[message.emotion.primary.toLowerCase()] : null;
+  const { theme: themeConfig } = useTheme();
 
   // Slide up animation from bottom - ChatGPT style
   const messageVariants = {
@@ -59,15 +61,13 @@ export default function MessageBubble({ message, theme, index }: MessageBubblePr
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 0.1, type: "spring", stiffness: 260, damping: 20 }}
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-          isUser 
-            ? theme === 'dark'
-              ? 'bg-gradient-to-br from-blue-600 to-cyan-600' 
-              : 'bg-gradient-to-br from-blue-500 to-cyan-500'
-            : theme === 'dark'
-              ? 'bg-gradient-to-br from-purple-600 to-pink-600'
-              : 'bg-gradient-to-br from-purple-500 to-pink-500'
-        }`}
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl"
+        style={{
+          background: isUser 
+            ? 'linear-gradient(135deg, #5C8DFF 0%, #8FB4FF 100%)' 
+            : 'linear-gradient(135deg, #358BFF 0%, #79B7FF 100%)',
+          boxShadow: '0 4px 12px rgba(53, 139, 255, 0.3)'
+        }}
       >
         {isUser ? (
           <User className="h-5 w-5 text-white" />
@@ -82,22 +82,20 @@ export default function MessageBubble({ message, theme, index }: MessageBubblePr
         <motion.div
           whileHover={{ scale: 1.01 }}
           transition={{ duration: 0.2 }}
-          className={`rounded-2xl px-4 py-3 max-w-[85%] sm:max-w-[80%] transition-shadow ${
-            isUser
-              ? theme === 'dark'
-                ? "bg-gradient-to-br from-blue-600 to-cyan-600 text-white shadow-lg hover:shadow-xl"
-                : "bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-lg hover:shadow-2xl"
-              : theme === 'dark'
-                ? "bg-gray-800 text-gray-100 shadow-md hover:shadow-lg"
-                : "bg-gray-100 text-gray-900 shadow-md hover:shadow-lg"
-          }`}
+          className="rounded-2xl px-4 py-3 max-w-[85%] sm:max-w-[80%] transition-all backdrop-blur-2xl"
+          style={{
+            background: isUser 
+              ? 'linear-gradient(135deg, #5C8DFF 0%, #8FB4FF 100%)'
+              : 'linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.5) 100%)',
+            color: isUser ? 'white' : '#0f172a',
+            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
+            border: isUser ? 'none' : '1px solid rgba(255, 255, 255, 0.7)'
+          }}
         >
           {isUser ? (
             <p className="whitespace-pre-wrap break-words">{message.content}</p>
           ) : (
-            <div className={`prose prose-sm max-w-none ${
-              theme === 'dark' ? 'prose-invert' : 'prose-gray'
-            }`}>
+            <div className="prose prose-sm max-w-none">
               <ReactMarkdown
                 components={{
                   p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
@@ -107,15 +105,17 @@ export default function MessageBubble({ message, theme, index }: MessageBubblePr
                   code: ({ children, className }) => {
                     const isInline = !className;
                     return isInline ? (
-                      <code className={`rounded px-1.5 py-0.5 ${
-                        theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'
-                      }`}>
+                      <code 
+                        className="rounded px-1.5 py-0.5"
+                        style={{ backgroundColor: 'rgba(53, 139, 255, 0.15)', color: '#358BFF' }}
+                      >
                         {children}
                       </code>
                     ) : (
-                      <code className={`block rounded-lg p-3 my-2 overflow-x-auto ${
-                        theme === 'dark' ? 'bg-gray-900' : 'bg-gray-800 text-gray-100'
-                      }`}>
+                      <code 
+                        className="block rounded-lg p-3 my-2 overflow-x-auto"
+                        style={{ backgroundColor: 'rgba(53, 139, 255, 0.1)', color: '#0f172a' }}
+                      >
                         {children}
                       </code>
                     );
@@ -135,9 +135,10 @@ export default function MessageBubble({ message, theme, index }: MessageBubblePr
           transition={{ delay: 0.3 }}
           className={`flex items-center gap-2 px-2 ${isUser ? "flex-row-reverse" : "flex-row"}`}
         >
-          <span className={`text-xs ${
-            theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-          }`}>
+          <span 
+            className="text-xs"
+            style={{ color: '#64748b' }}
+          >
             {format(message.timestamp, "HH:mm")}
           </span>
           
@@ -148,9 +149,10 @@ export default function MessageBubble({ message, theme, index }: MessageBubblePr
                 {emotionEmoji}
               </span>
               {message.emotion && (
-                <span className={`text-xs ${
-                  theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-                }`}>
+                <span 
+                  className="text-xs"
+                  style={{ color: '#64748b' }}
+                >
                   {Math.round(message.emotion.confidence)}%
                 </span>
               )}

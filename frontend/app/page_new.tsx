@@ -10,13 +10,13 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden" style={{
-      background: 'linear-gradient(135deg, #B8D4F7 0%, #C8D9F5 50%, #D8C9F6 100%)',
+      background: 'linear-gradient(135deg, #5A1E78 0%, #3B0A59 50%, #150B38 100%)',
       fontFamily: "'Poppins', 'Inter', sans-serif"
     }}>
       
       {/* Vignette Effect */}
       <div className="absolute inset-0 pointer-events-none" style={{
-        background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.1) 100%)'
+        background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%)'
       }} />
 
       {/* Animated Floating Particles */}
@@ -28,7 +28,7 @@ export default function LandingPage() {
             style={{
               width: Math.random() * 4 + 1 + 'px',
               height: Math.random() * 4 + 1 + 'px',
-              background: i % 3 === 0 ? '#3b82f6' : i % 3 === 1 ? '#a855f7' : '#f43f5e',
+              background: i % 3 === 0 ? '#FF6EE7' : i % 3 === 1 ? '#68E1FD' : '#9D7CFF',
               boxShadow: `0 0 ${Math.random() * 20 + 10}px currentColor`,
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
@@ -52,12 +52,12 @@ export default function LandingPage() {
       {/* Geometric Floating Shapes */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
         <motion.div
-          className="absolute top-20 left-10 w-32 h-32 border-2 border-[#3b82f6] rounded-lg"
+          className="absolute top-20 left-10 w-32 h-32 border-2 border-[#FF6EE7] rounded-lg"
           animate={{ rotate: [0, 360], scale: [1, 1.1, 1] }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         />
         <motion.div
-          className="absolute bottom-20 right-20 w-40 h-40 border-2 border-[#a855f7]"
+          className="absolute bottom-20 right-20 w-40 h-40 border-2 border-[#68E1FD]"
           style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}
           animate={{ rotate: [360, 0], scale: [1, 1.2, 1] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
@@ -70,8 +70,8 @@ export default function LandingPage() {
       </div>
 
       {/* Center Glow Effect */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-3xl opacity-30"
-        style={{ background: 'radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%)' }} />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-3xl opacity-40"
+        style={{ background: 'radial-gradient(circle, #9D7CFF 0%, transparent 70%)' }} />
 
       {/* Main Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-8 py-20">
@@ -85,24 +85,25 @@ export default function LandingPage() {
         >
           {/* Logo Spotlight */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full blur-3xl"
-            style={{ background: 'radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, transparent 70%)' }} />
+            style={{ background: 'radial-gradient(circle, rgba(157, 124, 255, 0.4) 0%, transparent 70%)' }} />
           
           <motion.div 
             className="inline-flex items-center justify-center w-28 h-28 rounded-full relative mb-6"
             animate={{
               boxShadow: [
-                '0 0 40px rgba(59, 130, 246, 0.6)',
-                '0 0 60px rgba(168, 85, 247, 0.6)',
-                '0 0 40px rgba(59, 130, 246, 0.6)',
+                '0 0 40px rgba(255, 110, 231, 0.6)',
+                '0 0 60px rgba(104, 225, 253, 0.6)',
+                '0 0 40px rgba(157, 124, 255, 0.6)',
+                '0 0 60px rgba(255, 110, 231, 0.6)',
               ]
             }}
             transition={{ duration: 4, repeat: Infinity }}
             style={{
-              background: 'linear-gradient(135deg, #3b82f6 0%, #a855f7 50%, #f43f5e 100%)',
+              background: 'linear-gradient(135deg, #FF6EE7 0%, #9D7CFF 50%, #68E1FD 100%)',
             }}
           >
-            <div className="absolute inset-1 bg-white/90 rounded-full flex items-center justify-center">
-              <Sparkles className="w-14 h-14 text-[#3b82f6]" />
+            <div className="absolute inset-1 bg-[#150B38] rounded-full flex items-center justify-center">
+              <Sparkles className="w-14 h-14 text-[#FF6EE7]" />
             </div>
           </motion.div>
 
@@ -112,8 +113,10 @@ export default function LandingPage() {
             transition={{ delay: 0.3, duration: 0.8 }}
             className="text-8xl font-black mb-6"
             style={{
-              color: '#0f172a',
-              textShadow: '0 4px 20px rgba(59, 130, 246, 0.3), 0 0 60px rgba(168, 85, 247, 0.2)',
+              background: 'linear-gradient(135deg, #FF6EE7 0%, #9D7CFF 50%, #68E1FD 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              textShadow: '0 0 80px rgba(157, 124, 255, 0.8)',
               letterSpacing: '-0.02em'
             }}
           >
@@ -124,8 +127,8 @@ export default function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.8 }}
-            className="text-2xl max-w-2xl mx-auto font-light"
-            style={{ color: '#64748b', textShadow: '0 0 20px rgba(255, 255, 255, 0.3)' }}
+            className="text-2xl text-white/80 max-w-2xl mx-auto font-light"
+            style={{ textShadow: '0 0 20px rgba(255, 255, 255, 0.3)' }}
           >
             Your AI companion that understands emotions, powered by local intelligence
           </motion.p>
@@ -138,9 +141,9 @@ export default function LandingPage() {
           transition={{ delay: 0.7, duration: 0.8 }}
           className="flex justify-center gap-12 mb-16"
         >
-          <NeonFeatureIcon icon={Heart} label="Emotional" color="#f43f5e" />
-          <NeonFeatureIcon icon={Brain} label="Intelligent" color="#3b82f6" />
-          <NeonFeatureIcon icon={Shield} label="Private" color="#a855f7" />
+          <NeonFeatureIcon icon={Heart} label="Emotional" color="#FF6EE7" />
+          <NeonFeatureIcon icon={Brain} label="Intelligent" color="#9D7CFF" />
+          <NeonFeatureIcon icon={Shield} label="Private" color="#68E1FD" />
         </motion.div>
 
         {/* CTA Button with Gradient Glow */}
@@ -154,12 +157,12 @@ export default function LandingPage() {
             onClick={() => router.push('/local-auth')}
             className="relative px-16 py-5 text-xl font-bold text-white rounded-2xl overflow-hidden group"
             style={{
-              background: 'linear-gradient(135deg, #358BFF 0%, #79B7FF 100%)',
-              boxShadow: '0 8px 32px rgba(53, 139, 255, 0.5), 0 0 60px rgba(53, 139, 255, 0.4)',
+              background: 'linear-gradient(135deg, #9D7CFF 0%, #FF6EE7 100%)',
+              boxShadow: '0 8px 32px rgba(157, 124, 255, 0.5), 0 0 60px rgba(255, 110, 231, 0.4)',
             }}
             whileHover={{ 
               scale: 1.05,
-              boxShadow: '0 12px 40px rgba(53, 139, 255, 0.7), 0 0 80px rgba(53, 139, 255, 0.6)',
+              boxShadow: '0 12px 40px rgba(157, 124, 255, 0.7), 0 0 80px rgba(255, 110, 231, 0.6)',
             }}
             whileTap={{ scale: 0.98 }}
           >
@@ -178,8 +181,7 @@ export default function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.1 }}
-            className="mt-4 text-sm flex items-center justify-center gap-2"
-            style={{ color: '#64748b' }}
+            className="mt-4 text-sm text-white/60 flex items-center justify-center gap-2"
           >
             <Lock className="w-4 h-4" />
             100% Offline • Your data stays private
@@ -197,19 +199,19 @@ export default function LandingPage() {
             title="Emotion Detection"
             description="Advanced AI that understands your feelings and responds with genuine empathy"
             icon={Heart}
-            glowColor="#f43f5e"
+            glowColor="#FF6EE7"
           />
           <NeonFeatureCard
             title="Local AI Power"
             description="Runs entirely on your device with Ollama - your data never leaves your computer"
             icon={Brain}
-            glowColor="#3b82f6"
+            glowColor="#9D7CFF"
           />
           <NeonFeatureCard
             title="Smart Conversations"
             description="Hybrid engine combining emotional intelligence with comprehensive knowledge"
             icon={Shield}
-            glowColor="#a855f7"
+            glowColor="#68E1FD"
           />
         </motion.div>
       </div>
@@ -228,20 +230,20 @@ function NeonFeatureIcon({ icon: Icon, label, color }: { icon: any; label: strin
         style={{
           background: `linear-gradient(135deg, ${color}20, ${color}10)`,
           border: `2px solid ${color}40`,
-          boxShadow: `0 0 30px ${color}50, inset 0 0 15px ${color}15`,
+          boxShadow: `0 0 40px ${color}60, inset 0 0 20px ${color}20`,
         }}
         animate={{
           boxShadow: [
-            `0 0 30px ${color}50, inset 0 0 15px ${color}15`,
-            `0 0 50px ${color}70, inset 0 0 25px ${color}25`,
-            `0 0 30px ${color}50, inset 0 0 15px ${color}15`,
+            `0 0 40px ${color}60, inset 0 0 20px ${color}20`,
+            `0 0 60px ${color}80, inset 0 0 30px ${color}30`,
+            `0 0 40px ${color}60, inset 0 0 20px ${color}20`,
           ]
         }}
         transition={{ duration: 2, repeat: Infinity }}
       >
         <Icon className="w-12 h-12" style={{ color }} />
       </motion.div>
-      <span className="font-medium" style={{ color: '#475569' }}>{label}</span>
+      <span className="text-white/80 font-medium">{label}</span>
     </motion.div>
   );
 }
@@ -283,8 +285,8 @@ function NeonFeatureCard({
           <Icon className="w-8 h-8" style={{ color: glowColor }} />
         </div>
         
-        <h3 className="text-2xl font-bold mb-4" style={{ color: '#0f172a' }}>{title}</h3>
-        <p className="leading-relaxed" style={{ color: '#64748b' }}>{description}</p>
+        <h3 className="text-2xl font-bold text-white mb-4">{title}</h3>
+        <p className="text-white/70 leading-relaxed">{description}</p>
       </div>
     </motion.div>
   );

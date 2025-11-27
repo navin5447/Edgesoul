@@ -8,11 +8,13 @@ from loguru import logger
 from datetime import datetime
 import asyncio
 import json
+import time
 
 from services.emotion_service import emotion_service
 from services.knowledge_engine import knowledge_engine
 from services.memory_service import memory_service
-from services.response_cache import response_cache
+# DISABLED: conversation_cache was causing Ollama timeouts and errors
+# from services.conversation_cache import conversation_cache
 from core.config import settings  # Import settings for optimization
 
 
@@ -45,25 +47,24 @@ class IntelligentReplyEngine:
         Generate intelligent reply combining emotion + knowledge.
         
         Flow:
-        1. Check cache for instant response (if enabled)
+        1. Check for cached conversation context (faster continuing conversations)
         2. Detect emotion with advanced classifier
         3. Determine response strategy
         4. Generate appropriate reply
         5. Add memory and personality
-        6. Cache common responses
+        6. Update conversation context cache
         """
         
         start_time = datetime.now()
         
         try:
-            # OPTIMIZATION 1: Check cache first for instant responses
-            cached_response = response_cache.get(message, user_id)
-            if cached_response:
-                logger.info(f"Returning cached response for: {message[:30]}...")
-                # Add fresh timestamp
-                cached_response['metadata']['timestamp'] = datetime.now().isoformat()
-                cached_response['metadata']['from_cache'] = True
-                return cached_response
+            # DISABLED: Conversation cache was causing errors and Ollama timeouts
+            # cached_context = conversation_cache.get_context(user_id)
+            # use_cached_context = cached_context is not None and not conversation_cache.should_refresh(user_id)
+            use_cached_context = False
+            
+            # if use_cached_context:
+            #     logger.debug(f"Using cached conversation context for {user_id}")
             
             # OPTIMIZATION 2: Run profile, context, and emotion detection in parallel
             if settings.ENABLE_PARALLEL_PROCESSING:
@@ -183,10 +184,13 @@ class IntelligentReplyEngine:
             
             logger.info(f"Reply generated - Strategy: {strategy}, Emotion: {emotion_result['primary']} ({emotion_result['confidence']:.2f})")
             
-            # OPTIMIZATION 3: Cache common responses for instant future replies
-            if response_cache.should_cache(message, final_response):
-                response_cache.set(message, user_id, final_response, emotion_result['primary'])
-                logger.debug(f"Cached response for future use")
+            # DISABLED: Cache was causing Ollama timeouts and errors
+            # conversation_cache.update_context(user_id, {
+            #     'last_emotion': emotion_result,
+            #     'last_strategy': strategy,
+            #     'profile': profile,
+            #     'timestamp': time.time()
+            # })
             
             return final_response
             
@@ -564,17 +568,17 @@ class IntelligentReplyEngine:
             # Adjust temperature and style based on request type
             if any(word in message_lower for word in ['joke', 'funny', 'humor']):
                 temperature = 0.8
-                max_tokens = 150
+                max_tokens = 300
             elif is_coding_question:
                 # Code questions need more tokens for complete programs
                 temperature = 0.3
-                max_tokens = 1500  # Enough for full code with comments and explanations
+                max_tokens = 2000  # Enough for full code with comments and explanations
             elif needs_structured_answer:
                 temperature = 0.3
-                max_tokens = 300
+                max_tokens = 800  # Increased for complete explanations
             else:
                 temperature = 0.2  # Factual, concise
-                max_tokens = 200
+                max_tokens = 600  # Increased to avoid cutting off mid-sentence
             
             # Simple prompt - just the question
             query_for_ai = enhanced_message
@@ -809,6 +813,16 @@ class IntelligentReplyEngine:
         except Exception as e:
             logger.debug(f"Could not load profile for casual chat: {e}")
         
+        # PRIORITY CHECK: Instant knowledge base for common questions (emotional + factual)
+        # This runs BEFORE emotional templates to catch specific phrases like "I don't feel good enough"
+        simple_answer = self.knowledge_engine._check_simple_facts(message_lower)
+        if simple_answer:
+            return {
+                'text': simple_answer,
+                'type': 'casual_chat',
+                'model': 'instant_knowledge_base'
+            }
+        
         # FAST PATH: Ultra-simple greetings get gender-appropriate instant templates (1-5ms)
         simple_greetings = ['hi', 'hello', 'hey', 'sup', 'yo']
         if message_lower in simple_greetings and len(message.split()) == 1:
@@ -831,6 +845,85 @@ class IntelligentReplyEngine:
                     'type': 'casual_chat',
                     'model': 'instant_template'
                 }
+        
+        # EMOTIONAL DETECTION: Detect emotional state from templates
+        # These patterns help identify emotions - Ollama will generate the response
+        emotional_patterns = {
+            'sadness': ['sad', 'depressed', 'down', 'crying', 'hopeless', 'empty', 'broken'],
+            'anxiety': ['anxious', 'worried', 'stressed', 'overthinking', 'panic', 'nervous', 'tense'],
+            'anger': ['angry', 'mad', 'frustrated', 'irritated', 'furious', 'betrayed'],
+            'loneliness': ['lonely', 'alone', 'isolated', 'no friends', 'left out', 'invisible'],
+            'confusion': ['confused', 'lost', 'unclear', 'stuck', 'directionless', 'don\'t know'],
+            'shame': ['guilty', 'ashamed', 'regret', 'mistake', 'bad person'],
+            'burnout': ['tired', 'exhausted', 'drained', 'overwhelmed', 'burned out', 'giving up'],
+            'low_confidence': ['not good enough', 'failure', 'useless', 'insecure', 'doubt myself'],
+            'heartbreak': ['heartbreak', 'broke up', 'miss someone', 'love hurts', 'can\'t move on'],
+            'joy': ['happy', 'excited', 'great', 'wonderful', 'amazing', 'joyful']
+        }
+        
+        detected_emotion = None
+        for emotion_type, keywords in emotional_patterns.items():
+            if any(keyword in message_lower for keyword in keywords):
+                detected_emotion = emotion_type
+                break
+        
+        # If strong emotional content detected, let Ollama generate empathetic response
+        # (Skip simple greetings and questions - only emotional expressions)
+        is_emotional_expression = (
+            detected_emotion is not None and
+            not any(q in message_lower for q in ['how to', 'how can i', 'what is', 'explain', 'tell me about', 'write'])
+        )
+        
+        # FAST PATH 2: Learning requests - instant template with topics (NO Ollama needed)
+        learning_keywords = ['want to learn', 'learn something', 'teach me', 'i want to', 'what should i learn']
+        is_learning_request = any(kw in message_lower for kw in learning_keywords)
+        
+        if is_learning_request and 'code' not in message_lower and 'program' not in message_lower:
+            # Learning question but NOT coding - give instant topic suggestions
+            import random
+            learning_responses = [
+                """That's awesome! Here are some exciting things you can learn:
+
+**Tech & Programming:**
+• Python basics - great for beginners!
+• Web development (HTML, CSS, JavaScript)
+• Data science fundamentals
+
+**Creative Skills:**
+• Digital art & design
+• Music production
+• Creative writing
+
+**Personal Growth:**
+• New language (Spanish, French, Japanese)
+• Photography techniques
+• Cooking & baking
+
+What interests you most? I can give you specific tips! 🌟""",
+                """I love your enthusiasm for learning! Here are some popular topics:
+
+📚 **Knowledge:**
+• Science & nature
+• History & culture
+• Psychology & mindfulness
+
+💻 **Technology:**
+• Coding & programming
+• AI & machine learning
+• Cybersecurity basics
+
+🎨 **Creative:**
+• Drawing & painting
+• Music (instrument or theory)
+• Video editing
+
+✨ Pick one and let me know - I'll help you get started!"""
+            ]
+            return {
+                'text': random.choice(learning_responses),
+                'type': 'casual_chat',
+                'model': 'instant_learning_template'
+            }
         
         # Get conversation context for natural flow
         conv_context = self.memory_service.get_conversation_context(user_id)
@@ -925,11 +1018,11 @@ class IntelligentReplyEngine:
                 max_tokens = gender_personality['max_words_casual']
                 logger.debug(f"Using gender-based casual length: {max_tokens} words ({gender_personality['greeting_style']} style)")
             
-            # Let Ollama generate natural response with conversation memory
+            # Let Ollama generate natural response with conversation memory and detected emotion
             response_data = await self.knowledge_engine.ask(
                 question=prompt,
                 context=context_for_ai,  # Pass recent conversation history
-                emotion=emotion,
+                emotion=detected_emotion if is_emotional_expression else emotion,  # Use template-detected emotion
                 temperature=0.9,
                 max_tokens=max_tokens  # Gender-adjusted length
             )
@@ -1207,7 +1300,36 @@ This will help me give you the most relevant, specific answer!"""
         if any(greeting in message_lower for greeting in greetings) or message_lower in ['hi', 'hey']:
             return 'greeting'
         
-        # CASUAL CONVERSATION patterns - must check BEFORE generic question detection
+        # PRIORITY 1: Check for CODE/PROGRAMMING requests FIRST before casual conversation
+        # This prevents "can you give code" from being classified as casual chat
+        practical_keywords = [
+            'applied', 'application', 'job', 'career', 'resume', 'cv', 'interview',
+            'form', 'fill', 'include on', 'what to include', 'give what',
+            'bank', 'account', 'money', 'paypal', 'company', 'position',
+            # CODE/PROGRAMMING requests
+            'code for', 'program for', 'script for', 'function for',
+            'write code', 'create code', 'generate code', 'make code',
+            'api connection', 'connect to api', 'rest api', 'api call',
+            'python code', 'javascript code', 'java code',
+            'algorithm for', 'function to', 'class for'
+        ]
+        
+        # Generic help/need/want patterns - include "i want" patterns
+        generic_requests = [
+            'help me with', 'need to', 'want to know', 'explain', 'tell me about',
+            'i want a code', 'i want code', 'want a program', 'want to make',
+            'give me code', 'show me code', 'need code for', 'looking for code',
+            'can you give', 'give a', 'give me a'
+        ]
+        
+        # PRIORITY: Check practical requests FIRST
+        if any(keyword in message_lower for keyword in practical_keywords):
+            return 'practical_request'
+        
+        if any(req in message_lower for req in generic_requests):
+            return 'practical_request'
+        
+        # CASUAL CONVERSATION patterns - check AFTER practical requests
         # These are social pleasantries, NOT knowledge questions
         casual_phrases = [
             'how are you', 'how r you', 'how r u', 'how are u',
@@ -1221,7 +1343,7 @@ This will help me give you the most relevant, specific answer!"""
         if any(phrase in message_lower for phrase in casual_phrases):
             return 'casual_conversation'
         
-        # Question patterns - CHECK AFTER CASUAL (to avoid "how are you" being detected as question)
+        # Question patterns - CHECK AFTER practical requests and casual conversation
         if message_lower.startswith(('what is', 'what are', 'who is', 'who are', 'explain', 'define')):
             return 'question'
         if message_lower.startswith(('how does', 'how do', 'how can', 'how to')):
@@ -1233,22 +1355,6 @@ This will help me give you the most relevant, specific answer!"""
         incomplete_questions = ['give what', 'what to', 'how to', 'which', 'include what', 'need what', 'say what']
         if any(pattern in message_lower for pattern in incomplete_questions):
             return 'question'
-        
-        # Practical request patterns - expanded for job applications, forms, specific requests
-        practical_keywords = [
-            'applied', 'application', 'job', 'career', 'resume', 'cv', 'interview',
-            'form', 'fill', 'include on', 'what to include', 'give what',
-            'bank', 'account', 'money', 'paypal', 'company', 'position'
-        ]
-        
-        # Generic help/need/want only count as practical if with specific nouns
-        generic_requests = ['help me with', 'need to', 'want to know', 'explain', 'tell me about']
-        
-        if any(keyword in message_lower for keyword in practical_keywords):
-            return 'practical_request'
-        
-        if any(req in message_lower for req in generic_requests):
-            return 'practical_request'
         
         # Default to emotional expression
         return 'emotional_expression'

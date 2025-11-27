@@ -1,6 +1,7 @@
 """
 Conversation Context Cache Service
 Caches conversation context for faster continuing conversations.
+Does NOT cache responses - only caches context to maintain intelligence.
 """
 
 import time
@@ -12,6 +13,7 @@ from collections import OrderedDict
 class ConversationContextCache:
     """
     Caches conversation context for faster continuing conversations.
+    Helps maintain conversation flow without re-analyzing context every time.
     """
     
     def __init__(self, max_sessions: int = 50, ttl: int = 300):
@@ -95,7 +97,7 @@ class ConversationContextCache:
         if session_id not in self.session_cache:
             return True
         
-        # Refresh if older than half TTL
+        # Refresh if older than half TTL (2.5 minutes by default)
         cache_age = time.time() - self.session_cache[session_id]['timestamp']
         return cache_age > (self.ttl / 2)
     
@@ -129,5 +131,5 @@ class ConversationContextCache:
         }
 
 
-# Global instance
+# Global instance - 5 minute cache for conversation context
 conversation_cache = ConversationContextCache(max_sessions=50, ttl=300)

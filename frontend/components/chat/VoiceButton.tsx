@@ -90,20 +90,33 @@ export default function VoiceButton({
         disabled={disabled}
         className={`
           relative rounded-xl p-2.5 transition-all duration-300
-          ${isListening
-            ? theme === 'dark'
-              ? 'bg-red-600 text-white hover:bg-red-700 animate-pulse'
-              : 'bg-red-500 text-white hover:bg-red-600 animate-pulse'
-            : disabled
-              ? theme === 'dark'
-                ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-              : theme === 'dark'
-                ? 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:scale-105'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:scale-105'
-          }
           ${className}
         `}
+        style={{
+          background: isListening
+            ? 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)'
+            : disabled
+              ? 'rgba(168, 207, 251, 0.3)'
+              : 'rgba(255, 255, 255, 0.6)',
+          color: isListening ? 'white' : '#64748b',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          border: '1px solid rgba(255, 255, 255, 0.7)',
+          boxShadow: isListening 
+            ? '0 4px 14px rgba(239, 68, 68, 0.4)' 
+            : '0 2px 8px rgba(0, 0, 0, 0.05)'
+        }}
+        onMouseEnter={(e) => {
+          if (!disabled && !isListening) {
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)';
+            e.currentTarget.style.transform = 'scale(1.05)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!disabled && !isListening) {
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.6)';
+            e.currentTarget.style.transform = 'scale(1)';
+          }
+        }}
         aria-label={isListening ? 'Stop recording' : 'Start voice input'}
         title={isListening ? 'Click to stop recording' : 'Speak your message (requires internet for speech recognition)'}
       >
@@ -124,14 +137,14 @@ export default function VoiceButton({
 
       {/* Interim transcript tooltip */}
       {isListening && interimText && (
-        <div className={`
-          absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2
-          px-3 py-2 rounded-lg text-sm whitespace-nowrap
-          ${theme === 'dark'
-            ? 'bg-gray-800 text-gray-200 border border-gray-700'
-            : 'bg-white text-gray-800 border border-gray-300 shadow-lg'
-          }
-        `}>
+        <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-3 py-2 rounded-lg text-sm whitespace-nowrap backdrop-blur-2xl"
+          style={{
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%)',
+            color: '#0f172a',
+            border: '1px solid rgba(255, 255, 255, 0.7)',
+            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)'
+          }}
+        >
           <div className="flex items-center gap-2">
             <div className="flex gap-1">
               <span className="w-1 h-4 bg-red-500 rounded-full animate-pulse"></span>
@@ -145,14 +158,14 @@ export default function VoiceButton({
 
       {/* Error message */}
       {error && (
-        <div className={`
-          absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2
-          px-3 py-2 rounded-lg text-xs max-w-xs text-center z-50
-          ${theme === 'dark'
-            ? 'bg-red-900/90 text-red-200 border border-red-700'
-            : 'bg-red-100 text-red-800 border border-red-300 shadow-lg'
-          }
-        `}>
+        <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-3 py-2 rounded-lg text-xs max-w-xs text-center z-50 backdrop-blur-2xl"
+          style={{
+            background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%)',
+            color: '#DC2626',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            boxShadow: '0 4px 16px rgba(239, 68, 68, 0.2)'
+          }}
+        >
           {error}
         </div>
       )}
