@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocalAuth } from '@/context/LocalAuthContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { FaChartLine, FaSpinner, FaSmile, FaCalendarAlt, FaClock, FaFire } from 'react-icons/fa';
@@ -40,11 +40,19 @@ export default function AnalyticsPage() {
   const [emotionPatterns, setEmotionPatterns] = useState<EmotionPattern[]>([]);
   const [timeRange, setTimeRange] = useState<'week' | 'month' | 'all'>('week');
 
-  const fetchAnalytics = useCallback(async () => {
+  useEffect(() => {
+    if (user) {
+      fetchAnalytics();
+    }
+  }, [user, timeRange]);
+
+  const fetchAnalytics = async () => {
     if (!user) return;
-    
+
     try {
-      setLoading(true);      // Fetch data from IndexedDB
+      setLoading(true);
+
+      // Fetch data from IndexedDB
       const chats = await getAllChatHistory(user.id);
       
       const emotionCounts: { [key: string]: number } = {};
@@ -120,13 +128,7 @@ export default function AnalyticsPage() {
     } finally {
       setLoading(false);
     }
-  }, [user]);
-
-  useEffect(() => {
-    if (user) {
-      fetchAnalytics();
-    }
-  }, [user, timeRange, fetchAnalytics]);
+  };
 
   const calculateStreakDays = (timestamps: Date[]): number => {
     if (timestamps.length === 0) return 0;
@@ -167,14 +169,15 @@ export default function AnalyticsPage() {
   const calculateEmotionDistribution = (patterns: EmotionPattern[]): EmotionStats[] => {
     const total = patterns.reduce((sum, p) => sum + p.frequency, 0);
     
+    // Soft pastel emotion colors
     const emotionColors: { [key: string]: string } = {
-      joy: '#FCD34D',
-      sadness: '#60A5FA',
-      anger: '#F87171',
-      fear: '#A78BFA',
-      surprise: '#FB923C',
-      love: '#F472B6',
-      neutral: '#9CA3AF'
+      joy: '#FFD5CC',       // soft peach
+      sadness: '#C2E9F5',   // soft aqua
+      anger: '#FFB6D9',     // soft pink
+      fear: '#E6D5F5',      // soft lavender
+      surprise: '#FFC9DD',  // soft rose
+      love: '#FFB6D9',      // pastel pink
+      neutral: '#D4F1E8'    // soft mint
     };
 
     return patterns.map(pattern => ({
@@ -201,10 +204,12 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <ProtectedRoute>
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+        <div className="min-h-screen flex items-center justify-center" style={{
+          background: 'linear-gradient(135deg, #FFE5F1 0%, #F3E5F5 25%, #E8EAF6 50%, #E1F5FE 75%, #FFE5F1 100%)'
+        }}>
           <div className="text-center">
-            <FaSpinner className="animate-spin text-4xl text-purple-600 mx-auto mb-4" />
-            <p className="text-gray-600">Loading analytics...</p>
+            <FaSpinner className="animate-spin text-4xl mx-auto mb-4" style={{ color: '#FFB6D9' }} />
+            <p style={{ color: '#7A6BA8' }}>Loading analytics...</p>
           </div>
         </div>
       </ProtectedRoute>
@@ -213,24 +218,39 @@ export default function AnalyticsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-12 px-4">
+      <div className="min-h-screen py-12 px-4" style={{
+        background: 'linear-gradient(135deg, #FFE5F1 0%, #F3E5F5 25%, #E8EAF6 50%, #E1F5FE 75%, #FFE5F1 100%)',
+        fontFamily: "'Poppins', 'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif"
+      }}>
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+          <div className="backdrop-blur-2xl rounded-3xl p-8 mb-6" style={{
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 240, 250, 0.6) 100%)',
+            boxShadow: '0 8px 32px rgba(255, 182, 217, 0.2)',
+            border: '2px solid rgba(255, 240, 250, 0.9)'
+          }}>
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{
+                  background: 'linear-gradient(135deg, #FFB6D9 0%, #E6D5F5 100%)',
+                  boxShadow: '0 6px 24px rgba(255, 182, 217, 0.4)'
+                }}>
                   <FaChartLine className="text-white text-2xl" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-800">Emotion Analytics</h1>
-                  <p className="text-gray-600">Track your emotional patterns and insights</p>
+                  <h1 className="text-3xl font-bold" style={{ color: '#7A6BA8' }}>Emotion Analytics</h1>
+                  <p style={{ color: '#B5A3C7' }}>Track your emotional patterns and insights ✨</p>
                 </div>
               </div>
 
               <button
                 onClick={() => router.push('/dashboard')}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                className="px-4 py-2 rounded-2xl transition-all"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255, 182, 217, 0.2) 0%, rgba(230, 213, 245, 0.2) 100%)',
+                  color: '#7A6BA8',
+                  border: '1.5px solid rgba(255, 240, 250, 0.8)'
+                }}
               >
                 Back to Dashboard
               </button>
@@ -242,11 +262,20 @@ export default function AnalyticsPage() {
                 <button
                   key={range}
                   onClick={() => setTimeRange(range)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-2xl font-medium transition-all ${
                     timeRange === range
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? ''
+                      : ''
                   }`}
+                  style={timeRange === range ? {
+                    background: 'linear-gradient(135deg, #FFB6D9 0%, #E6D5F5 100%)',
+                    color: 'white',
+                    boxShadow: '0 4px 16px rgba(255, 182, 217, 0.4)'
+                  } : {
+                    background: 'rgba(255, 240, 250, 0.5)',
+                    color: '#7A6BA8',
+                    border: '1px solid rgba(255, 240, 250, 0.8)'
+                  }}
                 >
                   {range === 'week' ? 'Last Week' : range === 'month' ? 'Last Month' : 'All Time'}
                 </button>
@@ -285,14 +314,18 @@ export default function AnalyticsPage() {
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Emotion Distribution */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Emotion Distribution</h2>
+            <div className="backdrop-blur-2xl rounded-3xl p-6" style={{
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 240, 250, 0.6) 100%)',
+              boxShadow: '0 8px 32px rgba(255, 182, 217, 0.2)',
+              border: '2px solid rgba(255, 240, 250, 0.9)'
+            }}>
+              <h2 className="text-xl font-bold mb-4" style={{ color: '#7A6BA8' }}>Emotion Distribution 💕</h2>
               
               {emotionDistribution.length === 0 ? (
                 <div className="text-center py-12">
-                  <FaSmile className="text-6xl text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-600">No emotion data yet</p>
-                  <p className="text-sm text-gray-500">Start chatting to see your emotional patterns!</p>
+                  <FaSmile className="text-6xl mx-auto mb-4" style={{ color: '#FFB6D9' }} />
+                  <p style={{ color: '#7A6BA8' }}>No emotion data yet</p>
+                  <p className="text-sm" style={{ color: '#B5A3C7' }}>Start chatting to see your emotional patterns!</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -301,21 +334,22 @@ export default function AnalyticsPage() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="text-2xl">{getEmotionEmoji(emotion.emotion)}</span>
-                          <span className="font-semibold text-gray-700 capitalize">{emotion.emotion}</span>
+                          <span className="font-semibold capitalize" style={{ color: '#7A6BA8' }}>{emotion.emotion}</span>
                         </div>
                         <div className="text-right">
-                          <span className="text-sm font-bold text-gray-800">{emotion.percentage.toFixed(1)}%</span>
-                          <span className="text-xs text-gray-500 ml-2">({emotion.count})</span>
+                          <span className="text-sm font-bold" style={{ color: '#D873A6' }}>{emotion.percentage.toFixed(1)}%</span>
+                          <span className="text-xs ml-2" style={{ color: '#B5A3C7' }}>({emotion.count})</span>
                         </div>
                       </div>
                       
                       {/* Progress Bar */}
-                      <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                      <div className="w-full rounded-full h-3 overflow-hidden" style={{ background: 'rgba(255, 240, 250, 0.5)' }}>
                         <div
                           className="h-full rounded-full transition-all duration-500"
                           style={{
                             width: `${emotion.percentage}%`,
-                            backgroundColor: emotion.color
+                            background: `linear-gradient(90deg, ${emotion.color} 0%, ${emotion.color}CC 100%)`,
+                            boxShadow: `0 0 10px ${emotion.color}80`
                           }}
                         />
                       </div>
@@ -326,57 +360,72 @@ export default function AnalyticsPage() {
             </div>
 
             {/* Most Common Emotion */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Most Common Emotion</h2>
+            <div className="backdrop-blur-2xl rounded-3xl p-6" style={{
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(243, 229, 245, 0.6) 100%)',
+              boxShadow: '0 8px 32px rgba(230, 213, 245, 0.25)',
+              border: '2px solid rgba(243, 229, 245, 0.9)'
+            }}>
+              <h2 className="text-xl font-bold mb-4" style={{ color: '#7A6BA8' }}>Most Common Emotion ✨</h2>
               
               {userStats && userStats.mostCommonEmotion ? (
                 <div className="text-center py-8">
                   <div className="text-8xl mb-4">
                     {getEmotionEmoji(userStats.mostCommonEmotion)}
                   </div>
-                  <h3 className="text-3xl font-bold text-gray-800 capitalize mb-2">
+                  <h3 className="text-3xl font-bold capitalize mb-2" style={{ color: '#D873A6' }}>
                     {userStats.mostCommonEmotion}
                   </h3>
-                  <p className="text-gray-600">
-                    This is the emotion you express most frequently in conversations
+                  <p style={{ color: '#B5A3C7' }}>
+                    This is the emotion you express most frequently in conversations 💕
                   </p>
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <p className="text-gray-600">Not enough data yet</p>
+                  <p style={{ color: '#B5A3C7' }}>Not enough data yet</p>
                 </div>
               )}
             </div>
 
             {/* Emotion Patterns */}
-            <div className="bg-white rounded-lg shadow-lg p-6 lg:col-span-2">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Emotion Patterns & Triggers</h2>
+            <div className="backdrop-blur-2xl rounded-3xl p-6 lg:col-span-2" style={{
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 248, 250, 0.6) 100%)',
+              boxShadow: '0 8px 32px rgba(255, 182, 217, 0.2)',
+              border: '2px solid rgba(255, 240, 250, 0.9)'
+            }}>
+              <h2 className="text-xl font-bold mb-4" style={{ color: '#7A6BA8' }}>Emotion Patterns & Triggers 🌸</h2>
               
               {emotionPatterns.length === 0 ? (
                 <div className="text-center py-12">
-                  <FaChartLine className="text-6xl text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-600">No pattern data available yet</p>
+                  <FaChartLine className="text-6xl mx-auto mb-4" style={{ color: '#FFB6D9' }} />
+                  <p style={{ color: '#B5A3C7' }}>No pattern data available yet</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {emotionPatterns.slice(0, 6).map((pattern, index) => (
-                    <div key={index} className="border border-gray-200 rounded-lg p-4 hover:border-purple-300 transition-colors">
+                    <div key={index} className="backdrop-blur-xl rounded-2xl p-4 transition-all hover:scale-105" style={{
+                      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 240, 250, 0.4) 100%)',
+                      border: '1.5px solid rgba(255, 240, 250, 0.7)',
+                      boxShadow: '0 4px 16px rgba(255, 182, 217, 0.15)'
+                    }}>
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
                           <span className="text-2xl">{getEmotionEmoji(pattern.emotion)}</span>
-                          <span className="font-semibold text-gray-700 capitalize">{pattern.emotion}</span>
+                          <span className="font-semibold capitalize" style={{ color: '#7A6BA8' }}>{pattern.emotion}</span>
                         </div>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm" style={{ color: '#B5A3C7' }}>
                           Intensity: {Math.round(pattern.intensity)}/100
                         </span>
                       </div>
                       
                       {pattern.triggers && pattern.triggers.length > 0 && (
                         <div className="mb-2">
-                          <p className="text-xs font-semibold text-gray-600 mb-1">Common Triggers:</p>
+                          <p className="text-xs font-semibold mb-1" style={{ color: '#D873A6' }}>Common Triggers:</p>
                           <div className="flex flex-wrap gap-1">
                             {pattern.triggers.slice(0, 3).map((trigger, idx) => (
-                              <span key={idx} className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                              <span key={idx} className="text-xs px-2 py-1 rounded-full" style={{
+                                background: 'rgba(255, 182, 217, 0.2)',
+                                color: '#7A6BA8'
+                              }}>
                                 {trigger}
                               </span>
                             ))}
@@ -384,7 +433,7 @@ export default function AnalyticsPage() {
                         </div>
                       )}
                       
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs" style={{ color: '#B5A3C7' }}>
                         Frequency: {pattern.frequency} times
                       </div>
                     </div>
@@ -407,13 +456,49 @@ interface StatCardProps {
 }
 
 function StatCard({ icon, title, value, color }: StatCardProps) {
+  const gradients: { [key: string]: { bg: string; icon: string; shadow: string; border: string } } = {
+    'from-purple-500 to-pink-500': {
+      bg: 'linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 240, 250, 0.6) 100%)',
+      icon: 'linear-gradient(135deg, rgba(255, 182, 217, 0.3) 0%, rgba(255, 201, 221, 0.2) 100%)',
+      shadow: '0 6px 24px rgba(255, 182, 217, 0.2)',
+      border: '1.5px solid rgba(255, 240, 250, 0.9)'
+    },
+    'from-blue-500 to-cyan-500': {
+      bg: 'linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(243, 229, 245, 0.6) 100%)',
+      icon: 'linear-gradient(135deg, rgba(230, 213, 245, 0.4) 0%, rgba(216, 191, 248, 0.3) 100%)',
+      shadow: '0 6px 24px rgba(230, 213, 245, 0.25)',
+      border: '1.5px solid rgba(243, 229, 245, 0.9)'
+    },
+    'from-orange-500 to-yellow-500': {
+      bg: 'linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 248, 240, 0.6) 100%)',
+      icon: 'linear-gradient(135deg, rgba(255, 213, 204, 0.4) 0%, rgba(255, 196, 188, 0.3) 100%)',
+      shadow: '0 6px 24px rgba(255, 213, 204, 0.25)',
+      border: '1.5px solid rgba(255, 248, 240, 0.9)'
+    },
+    'from-red-500 to-pink-500': {
+      bg: 'linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(225, 245, 254, 0.6) 100%)',
+      icon: 'linear-gradient(135deg, rgba(194, 233, 245, 0.4) 0%, rgba(184, 224, 245, 0.3) 100%)',
+      shadow: '0 6px 24px rgba(194, 233, 245, 0.25)',
+      border: '1.5px solid rgba(225, 245, 254, 0.9)'
+    }
+  };
+
+  const style = gradients[color] || gradients['from-purple-500 to-pink-500'];
+
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
-      <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${color} flex items-center justify-center text-white mb-4`}>
-        {icon}
+    <div className="backdrop-blur-2xl rounded-3xl p-6 hover:scale-105 transition-transform" style={{
+      background: style.bg,
+      boxShadow: style.shadow,
+      border: style.border
+    }}>
+      <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4" style={{
+        background: style.icon,
+        boxShadow: '0 0 20px rgba(255, 182, 217, 0.4)'
+      }}>
+        <div style={{ color: '#FFB6D9' }}>{icon}</div>
       </div>
-      <h3 className="text-sm font-medium text-gray-600 mb-1">{title}</h3>
-      <p className="text-3xl font-bold text-gray-800">{value}</p>
+      <h3 className="text-sm font-medium mb-1" style={{ color: '#B5A3C7' }}>{title}</h3>
+      <p className="text-3xl font-bold" style={{ color: '#7A6BA8' }}>{value}</p>
     </div>
   );
 }
